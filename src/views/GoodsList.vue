@@ -6,7 +6,18 @@
       </nav-bread>
       <div class="accessory-result-page">
         <div class="container">
+          <div class="nav-category">
+            <ul class="nav-type">
+              <li><a href="javascript:void(0)">小白鞋</a></li>
+              <li><a href="javascript:void(0)">手表</a></li>
+              <li><a href="javascript:void(0)">手机</a></li>
+              <li><a href="javascript:void(0)">耳机</a></li>
+              <li><a href="javascript:void(0)">服装</a></li>
+              <li><a href="javascript:void(0)">背包</a></li>
+            </ul>
+          </div>
           <div class="filter-nav">
+
             <span class="sortby">排序:</span>
             <a href="javascript:void(0)" class="default cur">默认</a>
             <a href="javascript:void(0)" class="price">价格 <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
@@ -30,7 +41,7 @@
                 <ul>
                   <li v-for="item in goodsList">
                     <div class="pic">
-                      <a href="#"><img v-bind:src="'/static/' + item.productImage" alt=""></a>
+                      <a href="#"><img v-lazy="'/static/' + item.productImage" alt=""></a>
                     </div>
                     <div class="main">
                       <div class="name">{{item.productName}}</div>

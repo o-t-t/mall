@@ -64,7 +64,7 @@
     -webkit-transform: translateY(-50%);
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
-    right: 36px;
+    right: 249px;
   }
 
   .footer__secondary__nav a,
