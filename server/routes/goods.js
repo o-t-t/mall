@@ -1,0 +1,44 @@
+var express = require('express'); //通过NodeJS原生的封装
+var router = express.Router();  //拿到express框架的路由
+var mongoose = require('mongoose');  //要操作我们的数据库，就需要获取mongoose对象
+var Goods = require('../models/goods');  //加载模型表，加载私有文件
+
+//连接MongoDB数据库
+mongoose.connect('mongodb://127.0.0.1:27017/mall');
+
+mongoose.connection.on("connected",function(){
+  console.log("数据库连接成功");
+});
+
+mongoose.connection.on("error",function(){
+  console.log("数据库连接失败");
+});
+
+mongoose.connection.on("disconnected",function(){
+  console.log("数据库连接断开");
+});
+
+//查询商品列表数据
+router.get("/",function(req,res,next){      //二级路由，通过get拿到商品列表信息，接受一个回调
+  Goods.find({},function(err,doc){
+    //console.log(doc);
+    if(err){
+      res.json({
+        status: '1',
+        mag: err.message,
+        result: ''
+      });
+    }else{
+      res.json({
+        status: '0',
+        msg: '',
+        result: {
+          count: doc.length,
+          list: doc
+        }
+      });
+    }
+  });
+});
+
+module.exports = router; //正确输出路由后，在app.js中的（app.use("/goods",goods)）才能读取到goods.js的路由

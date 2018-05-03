@@ -28,13 +28,13 @@
             <div class="accessory-list-wrap">
               <div class="accessory-list col-4">
                 <ul>
-                  <li>
+                  <li v-for="item in goodsList">
                     <div class="pic">
-                      <a href="#"><img src="/static/1.jpg" alt=""></a>
+                      <a href="#"><img v-bind:src="'/static/' + item.productImage" alt=""></a>
                     </div>
                     <div class="main">
-                      <div class="name">小米电视4 55英寸</div>
-                      <div class="price">3999</div>
+                      <div class="name">{{item.productName}}</div>
+                      <div class="price">{{item.salePrice}}</div>
                       <div class="btn-area">
                         <a href="javascript:;" class="btn btn--m">加入购物车</a>
                       </div>
@@ -52,24 +52,33 @@
 
 <script>
   import './../assets/css/base.css'
-  import './../assets/css/nav-header.css'
-  import './../assets/css/nav-bread.css'
-  import './../assets/css/nav-footer.css'
   import './../assets/css/goods-list.css'
   import NavHeader from './../components/NavHeader.vue'
   import NavBread from './../components/NavBread.vue'
   import NavFooter from './../components/NavFooter.vue'
+  import axios from 'axios'
     export default {
-        name: 'GoodsList',
         data() {
             return {
-
+              goodsList: []
             }
         },
+      mounted(){
+        this.getGoodsList();
+      },
       components: {
         NavHeader,
         NavBread,
         NavFooter
+      },
+      methods: {
+          getGoodsList(){
+            axios.get("/goods").then((result) => {
+              console.log(result);
+              var res = result.data;
+              this.goodsList = res.result.list;
+            });
+          }
       }
     }
 </script>
