@@ -3,6 +3,11 @@
       <nav-header></nav-header>
       <nav-bread>
         <span>商品列表</span>
+        <div slot="form" class="search">
+          <form action="" method="get">
+            <span class="kuan"><input name="" value="请输入商品关键字" type="text" /></span><span class="an"><input name="" value="搜索" type="button" /></span>
+          </form>
+        </div>
       </nav-bread>
       <div class="accessory-result-page">
         <div class="container">

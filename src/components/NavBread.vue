@@ -1,6 +1,7 @@
 <template>
   <div class="nav-breadcrumb-wrap">
     <div class="container">
+      <slot name="form"></slot>
       <nav class="nav-breadcrumb">
         <a href="/">主页</a>
         <slot></slot>
@@ -61,5 +62,23 @@
 
   .nav-breadcrumb span {
     color: #d1434a;
+  }
+  .kuan input{
+    width:280px;
+    height:38px;
+   /* background:url(../img/kuan_01.jpg) no-repeat;*/
+    border:1px solid transparent;;
+    margin-top:4px;
+  }
+  .an input{
+    width:100px;
+    height:38px;
+   /* background:url(../img/an_02.jpg) no-repeat;*/
+    border:none;
+  }
+  .search{
+    float:right;
+    height:45px;
+    margin:0 100px 0 0;
   }
 </style>
