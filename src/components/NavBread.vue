@@ -69,6 +69,7 @@
    /* background:url(../img/kuan_01.jpg) no-repeat;*/
     border:1px solid transparent;;
     margin-top:4px;
+    color:#989898;
   }
   .an input{
     width:100px;
