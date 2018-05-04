@@ -25,7 +25,7 @@
 
             <span class="sortby">排序:</span>
             <a href="javascript:void(0)" class="default cur">默认</a>
-            <a href="javascript:void(0)" class="price">价格 <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
+            <a href="javascript:void(0)" class="price" @click="sortGoods">价格 <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
             <a href="javascript:void(0)" class="filterby">筛选</a>
           </div>
           <div class="accessory-result">
@@ -76,7 +76,10 @@
     export default {
         data() {
             return {
-              goodsList: []
+              goodsList: [],
+              sortFlag: true,
+              page: 1,
+              pageSize: 8
             }
         },
       mounted(){
@@ -89,12 +92,25 @@
       },
       methods: {
           getGoodsList(){
-            axios.get("/goods").then((result) => {
-              console.log(result);
+            var param = {
+              page: this.page,
+              pageSize: this.pageSize,
+              sort: this.sortFlag?1:-1
+            }
+            axios.get("/goods",{
+              params:param
+            }).then((result) => {
+              //console.log(result);
               var res = result.data;
               this.goodsList = res.result.list;
             });
-          }
+          },
+        sortGoods(){
+            this.sortFlag = !this.sortFlag;
+            this.page = 1;
+            this.getGoodsList();
+
+        }
       }
     }
 </script>
