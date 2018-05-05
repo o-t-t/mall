@@ -12,7 +12,10 @@
   "dependencies": {
     "axios": "^0.18.0",
     "ejs": "^2.5.9",
+    "vt-cell": "^1.0.2",
+    "vt-infinitescroll": "^0.1.0",
     "vue": "^2.5.2",
+    "vue-infinite-scroll": "^2.0.2",
     "vue-lazyload": "^1.2.3",
     "vue-router": "^3.0.1"
   },
