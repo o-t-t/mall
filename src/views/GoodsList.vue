@@ -165,7 +165,8 @@
         var param = {
           page: this.page,
           pageSize: this.pageSize,
-          sort: this.sortFlag?1:-1
+          sort: this.sortFlag?1:-1,
+          priceLevel: this.priceChecked
         }
         //this.loading = true;
         axios.get("/goods",{
@@ -212,8 +213,10 @@
         //console.log('现在在第'+this.page+'页');
       },
       setPriceFilter(index){   //设置价格过滤器看看哪里被选中，就跳到哪里
-        console.log(index);
+        //console.log(index);
+        this.page = 1;
         this.priceChecked = index;
+        this.getGoodsList();
       },
       showFilterPop(){
         this.filterBy = true;
