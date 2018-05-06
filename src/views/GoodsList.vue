@@ -24,8 +24,8 @@
         <div class="filter-nav">
 
           <span class="sortby">排序:</span>
-          <a href="javascript:void(0)" class="default page">默认</a>
-          <a href="javascript:void(0)" class="price" @click="sortGoods">价格 <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
+          <a href="javascript:void(0)" class="default page" @click="defaultSort">默认</a>
+          <a href="javascript:void(0)" class="price" v-bind:class="{'sort-up': sortFlag}" @click="sortGoods">价格 <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
           <a href="javascript:void(0)" class="filterby">筛选</a>
         </div>
         <div class="accessory-result">
@@ -157,6 +157,11 @@
             }
           }*/
         });
+      },
+      defaultSort(){
+        this.sortFlag = true;
+        this.page = 1;
+        this.getGoodsList();
       },
       sortGoods(){
         this.sortFlag = !this.sortFlag;
