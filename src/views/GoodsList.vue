@@ -21,10 +21,10 @@
             <li><a href="javascript:void(0)">背包</a></li>
           </ul>
         </div>
-        <div class="filter-nav">
 
+        <div class="filter-nav">
           <span class="sortby">排序:</span>
-          <a href="javascript:void(0)" class="default page" @click="defaultSort">默认</a>
+          <a href="javascript:void(0)" class="default cur" @click="defaultSort">默认</a>
           <a href="javascript:void(0)" class="price" v-bind:class="{'sort-up': sortFlag}" @click="sortGoods">价格 <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
           <a href="javascript:void(0)" class="filterby">筛选</a>
         </div>
@@ -33,9 +33,10 @@
           <div class="filter" id="filter">
             <dl class="filter-price">
               <dt>价格区间:</dt>
-              <dd><a href="javascript:void(0)">选择价格</a></dd>
-              <dd>
-                <a href="javascript:void(0)">￥ 0 - 100 元</a>
+              <!--v-bind:class="{'cur': priceChecked == 'all'}"是动态绑定cur这个类名，如果priceChecked==all 为true的话，就用cur这个类名-->
+              <dd><a href="javascript:void(0)" @click="setPriceFilter('all')" v-bind:class="{'cur': priceChecked == 'all'}">选择价格</a></dd>
+              <dd v-for="(item,index) in priceFilter">
+                <a href="javascript:void(0)" @click="setPriceFilter(index)" v-bind:class="{'cur': priceChecked == index}">￥{{item.startPrice}} - {{item.endPrice}}元</a>
               </dd>
             </dl>
           </div>
@@ -65,12 +66,12 @@
                  infinite-scroll-distance="20">-->
             <div class="page-bar">
               <ul>
-                <li v-if="page>1"><a v-on:click="page--,pageClick()">上一页</a></li>
+                <li v-if="page>1"><a v-on:click="page--,pageClick()" href="#">上一页</a></li>
                 <li v-if="page==1"><a class="banclick">上一页</a></li>
                 <li v-for="index in indexs"  v-bind:class="{ 'active': page == index}">
-                  <a v-on:click="btnClick(index)">{{ index }}</a>
+                  <a href="#" v-on:click="btnClick(index)">{{ index }}</a>
                 </li>
-                <li v-if="page!=all"><a v-on:click="page++,pageClick()" >下一页</a></li>
+                <li v-if="page!=all"><a v-on:click="page++,pageClick()" href="#">下一页</a></li>
                 <li v-if="page == all"><a class="banclick">下一页</a></li>
                 <li><a>共<i>{{all}}</i>页</a></li>
               </ul>
@@ -98,12 +99,39 @@
     data() {
       return {
         goodsList: [],
+        priceChecked: 'all',
         sortFlag: true,
         page: 1,
         pageSize: 8,
         /* busy:true,
          loading:false,*/
-        all: 5
+        all: 5,
+        priceFilter: [
+          {
+            startPrice: '0.00',
+            endPrice: '100.00'
+          },
+          {
+            startPrice: '100.00',
+            endPrice: '500.00'
+          },
+          {
+            startPrice: '500.00',
+            endPrice: '1000.00'
+          },
+          {
+            startPrice: '1000.00',
+            endPrice: '2000.00'
+          },
+          {
+            startPrice: '2000.00',
+            endPrice: '3000.00'
+          },
+          {
+            startPrice: '3000.00',
+            endPrice: "6000.00"
+          }
+        ]
       }
     },
     mounted(){
@@ -178,6 +206,10 @@
       pageClick(){
         this.getGoodsList();
         //console.log('现在在第'+this.page+'页');
+      },
+      setPriceFilter(index){
+        console.log(index);
+        this.priceChecked = index;
       }
       /*loadMore(){
         this.busy = true;
