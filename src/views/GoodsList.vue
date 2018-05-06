@@ -82,6 +82,8 @@
       </div>
     </div>
     <!--<page></page>-->
+    <!--遮罩层;点击遮罩层就关闭移动端的价格数据-->
+    <div class="md-overlay" v-show="overLayFlag" @click.stop="closePop"></div>
     <nav-footer></nav-footer>
   </div>
 </template>
@@ -132,7 +134,8 @@
             endPrice: "6000.00"
           }
         ],
-        filterBy: false
+        filterBy: false, //当没有点击筛选时，移动端价格数据是不显示的
+        overLayFlag: false //设置遮罩层
       }
     },
     mounted(){
@@ -208,12 +211,17 @@
         this.getGoodsList();
         //console.log('现在在第'+this.page+'页');
       },
-      setPriceFilter(index){
+      setPriceFilter(index){   //设置价格过滤器看看哪里被选中，就跳到哪里
         console.log(index);
         this.priceChecked = index;
       },
       showFilterPop(){
         this.filterBy = true;
+        this.overLayFlag = true
+      },
+      closePop(){
+        this.filterBy = false;
+        this.overLayFlag = false
       }
       /*loadMore(){
         this.busy = true;
