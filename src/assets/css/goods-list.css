@@ -430,12 +430,17 @@
 }
 .nav-type{
   float:left;
-  margin-left:270px;
+  margin-left:350px;
   margin-top:0;
+}
+.type-click{
+  color:#d1434a;
+  border-bottom:2.3px solid #d1434a;
+  border-radius:2px;
 }
 .nav-type li{
   display:inline;
-  margin-right:95px;
+  margin-right:50px;
   color:#626262;
   font-size:16px;
   font-weight:bold;

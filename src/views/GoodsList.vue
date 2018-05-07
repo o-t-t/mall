@@ -13,12 +13,9 @@
       <div class="container">
         <div class="nav-category">
           <ul class="nav-type">
-            <li><a href="javascript:void(0)">小白鞋</a></li>
-            <li><a href="javascript:void(0)">手表</a></li>
-            <li><a href="javascript:void(0)">手机</a></li>
-            <li><a href="javascript:void(0)">耳机</a></li>
-            <li><a href="javascript:void(0)">服装</a></li>
-            <li><a href="javascript:void(0)">背包</a></li>
+            <li v-for="(item,index) in goodsType">
+              <a href="javascript:void(0)" v-bind:class="{'type-click':typeChecked == index}" @click="typeClick(index)">{{item.type}}</a>
+            </li>
           </ul>
         </div>
 
@@ -102,6 +99,7 @@
       return {
         goodsList: [],
         priceChecked: 'all',
+        typeChecked: '',
         sortFlag: true,
         page: 1,
         pageSize: 8,
@@ -135,7 +133,31 @@
           }
         ],
         filterBy: false, //当没有点击筛选时，移动端价格数据是不显示的
-        overLayFlag: false //设置遮罩层
+        overLayFlag: false, //设置遮罩层
+        //goodsType: ["小白鞋","手机","服装","背包","手表","耳机"]
+        goodsType: [
+          {
+            type: "全部商品"
+          },
+          {
+            type: "小白鞋"
+          },
+          {
+            type: "手机"
+          },
+          {
+            type: "服装"
+          },
+          {
+            type: "背包"
+          },
+          {
+            type:"手表"
+          },
+          {
+            type: "耳机"
+          }
+        ]
       }
     },
     mounted(){
@@ -166,9 +188,12 @@
           page: this.page,
           pageSize: this.pageSize,
           sort: this.sortFlag?1:-1,
-          priceLevel: this.priceChecked
+          priceLevel: this.priceChecked,
+          proType: this.typeChecked
         }
         //this.loading = true;
+
+
         axios.get("/goods",{
           params:param
         }).then((result) => {
@@ -216,6 +241,12 @@
         //console.log(index);
         this.page = 1;
         this.priceChecked = index;
+        this.getGoodsList();
+      },
+      typeClick(index){
+        console.log(index);
+        this.page = 1;
+        this.typeChecked = index;
         this.getGoodsList();
       },
       showFilterPop(){

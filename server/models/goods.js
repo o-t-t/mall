@@ -7,7 +7,12 @@ var productSchema = new Schema({
   "salePrice": Number,
   "checked":String,
   "productNum":Number,
-  "productImage": String
+  "productImage": String,
+  "productType":[
+    {
+      "typeName":String
+    }
+  ]
 });
 
 module.exports = mongoose.model('Good',productSchema);
