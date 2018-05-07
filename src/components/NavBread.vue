@@ -63,23 +63,30 @@
   .nav-breadcrumb span {
     color: #d1434a;
   }
-  .kuan input{
+  .kuan .text{
     width:280px;
     height:38px;
    /* background:url(../img/kuan_01.jpg) no-repeat;*/
     border:1px solid transparent;;
-    margin-top:4px;
+    margin:4px 0 0 0;
     color:#989898;
+    float:right;
   }
-  .an input{
+  .an .btn{
     width:100px;
     height:38px;
    /* background:url(../img/an_02.jpg) no-repeat;*/
     border:none;
+    float:right;
+    margin:4px 70px 0 0;
+    line-height:37px;
   }
   .search{
     float:right;
     height:45px;
     margin:0 100px 0 0;
+  }
+  ul li{
+    display:inline;
   }
 </style>

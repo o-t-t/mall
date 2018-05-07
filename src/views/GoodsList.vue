@@ -3,10 +3,9 @@
     <nav-header></nav-header>
     <nav-bread>
       <span>商品列表</span>
-      <div slot="form" class="search">
-        <form action="" method="get">
-          <span class="kuan"><input name="" value="请输入商品关键字" type="text" /></span><span class="an"><input name="" value="搜索" type="button" /></span>
-        </form>
+      <div slot="form" class="search kuan an">
+        <span><input class="btn" name="" value="搜索" type="button" @click="search_mode()"/></span>
+        <input class="text" v-model="search" placeholder="请输入商品关键字" ref="sea"/>
       </div>
     </nav-bread>
     <div class="accessory-result-page">
@@ -157,7 +156,120 @@
           {
             type: "耳机"
           }
-        ]
+        ],
+        /*search: '',
+        products: [
+          {
+            name: "奥康 小白鞋运动板鞋白黑35码"
+          },
+          {
+            name: "斯纳菲 男女童小白鞋"
+          },
+          {
+            name: "森马 运动小白鞋 白黑 37码"
+          },
+          {
+            name: "小白鞋学生 白粉色 37码"
+          },
+          {
+            name: "原宿百搭学生小白鞋 白色 38"
+          },
+          {
+            name: "背包大容量学院风"
+          },
+          {
+            name: "简约学院风气质背包 宝蓝色"
+          },
+          {
+            name: "莱夫多功能双肩背包"
+          },
+          {
+            name: "尼龙布背包 神秘深蓝"
+          },
+          {
+            name: "时尚休闲女士背包 黑色"
+          },
+          {
+            name: "双肩背包旅行黑色"
+          },
+          {
+            name: "套装组合子母背包 咖啡图腾熊"
+          },
+          {
+            name: "休闲韩版背包卡其色"
+          },
+          {
+            name: "大童男孩春款两件套 服装"
+          },
+          {
+            name: "儿童服装男童运动三件套 服装"
+          },
+          {
+            name: "健身跑步休闲运动上衣 服装"
+          },
+          {
+            name: "男女童长袖幼儿园园服 服装"
+          },
+          {
+            name: "排汗弹力跑步快干衣 服装"
+          },
+          {
+            name: "时尚服装 喇叭裤"
+          },
+          {
+            name: "小脚哈伦裤九分 韩版服装"
+          },
+          {
+            name: "休闲裤修身 服装"
+          },
+          {
+            name: "休闲运动上衣 服装"
+          },
+          {
+            name: "大众指针男表 手表"
+          },
+          {
+            name: "防水时尚潮流男表 手表"
+          },
+          {
+            name: "经典三盘商务男表石英表手表"
+          },
+          {
+            name: "男表精钢捷克钻镀金 手表"
+          },
+          {
+            name: "男表约时尚大表盘手表"
+          },
+          {
+            name: "手表夜光防水男表"
+          },
+          {
+            name: "华为 Mate 4GB+64GB 香槟金手机"
+          },
+          {
+            name: "华为手机 nova2 4GB+64GB 黑"
+          },
+          {
+            name: "三星手机 Galaxy S9+"
+          },
+          {
+            name: "小米手机 Mix2 6GB+64GB 游戏机"
+          },
+          {
+            name: "小米手机Max2 4GB+128GB 白"
+          },
+          {
+            name: "漫步者 入耳式耳机"
+          },
+          {
+            name: "索尼 无线蓝牙耳机"
+          },
+          {
+            name: "无线降噪游戏耳机"
+          },
+
+        ]*/
+        search: '',
       }
     },
     mounted(){
@@ -174,7 +286,8 @@
           //console.log(ar);
         }
         return ar
-      }
+      },
+
     },
     components: {
       NavHeader,
@@ -189,7 +302,8 @@
           pageSize: this.pageSize,
           sort: this.sortFlag?1:-1,
           priceLevel: this.priceChecked,
-          proType: this.typeChecked
+          proType: this.typeChecked,
+          searchValue: this.search//搜索值
         }
         //this.loading = true;
 
@@ -244,10 +358,17 @@
         this.getGoodsList();
       },
       typeClick(index){
-        console.log(index);
+        //console.log(index);
         this.page = 1;
         this.typeChecked = index;
         this.getGoodsList();
+      },
+       search_mode(){
+        this.search = this.$refs.sea.value;//把绑定值赋予全局变量search
+        if (this.search) {
+          //console.log(this.search);
+          this.getGoodsList();
+        }
       },
       showFilterPop(){
         this.filterBy = true;
