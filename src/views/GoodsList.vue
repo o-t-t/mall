@@ -5,7 +5,7 @@
       <span>商品列表</span>
       <div slot="form" class="search kuan an">
         <span><input class="btn" name="" value="搜索" type="button" @click="search_mode()"/></span>
-        <input class="text" v-model="search" placeholder="请输入商品关键字" ref="sea"/><!--这里通过ref=”sea”实现搜索框内容和本地文件的双向绑定-->
+        <input class="text" v-model="search" placeholder="请输入商品关键字" @keyup.enter="search_mode()" ref="sea"/><!--这里通过ref=”sea”实现搜索框内容和本地文件的双向绑定-->
       </div>
     </nav-bread>
     <div class="accessory-result-page">
