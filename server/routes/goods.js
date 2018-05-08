@@ -18,7 +18,7 @@ mongoose.connection.on("disconnected",function(){
   console.log("数据库连接断开");
 });
 
-//查询商品列表数据
+//查询商品列表数据 （get去拿数据）
 router.get("/",function(req,res,next) {      //二级路由，通过get拿到商品列表信息，接受一个回调
   var search = req.param("searchValue");
   let page = parseInt(req.param('page'));
@@ -143,5 +143,84 @@ router.get("/",function(req,res,next) {      //二级路由，通过get拿到商
       }
     });
   });
+
+//加入购物车（向服务器提交数据，一般用post）
+router.post("/addCart",function(req,res,next){
+  var userId = "100000077";
+  var productId = req.body.productId;
+  var User = require('../models/user');
+
+  User.findOne({userId:userId},function(err,userDoc){
+    //console.log(userDoc);
+    if(err){
+      res.json({
+        status: '1',
+        msg: err.message
+      });
+    }else{
+      if(userDoc){
+        var goodsItem = '';
+        userDoc.cartList.forEach(function(item){
+          //console.log(item);
+          if(item.productId == productId){
+            //如果购物车中的商品已经存在，就只做商品数量+1
+            goodsItem = item;
+            item.productNum++;
+          }
+        });
+        if(goodsItem){
+          userDoc.save(function(err2,doc2){
+            if(err2){
+              res.json({
+                status: '1',
+                msg: err2.message,
+                result: ''
+              });
+            }else{
+              res.json({
+                status: '0',
+                msg: '',
+                result: 'suc'
+              });
+            }
+          });
+        }else{
+          //原来购物车中不存在的商品，往购物车里新添商品
+          Goods.findOne({productId:productId},function(err1,doc){
+            if(err1){
+              res.json({
+                status: '1',
+                msg: err1.message,
+                result: ''
+              });
+            }else{
+              if(doc){
+                //console.log(doc);
+                doc.productNum = 1;
+                doc.checked = 1;
+                userDoc.cartList.push(doc);
+                userDoc.save(function(err2,doc2){
+                  if(err2){
+                    res.json({
+                      status: '1',
+                      msg: err2.message,
+                      result: ''
+                    });
+                  }else{
+                    res.json({
+                      status: '0',
+                      msg: '',
+                      result: 'suc'
+                    });
+                  }
+                });
+              }
+            }
+          });
+        }
+      }
+    }
+  });
+});
 
   module.exports = router; //正确输出路由后，在app.js中的（app.use("/goods",goods)）才能读取到goods.js的路由
