@@ -5,7 +5,7 @@
       <span>商品列表</span>
       <div slot="form" class="search kuan an">
         <span><input class="btn" name="" value="搜索" type="button" @click="search_mode()"/></span>
-        <input class="text" v-model="search" placeholder="请输入商品关键字" ref="sea"/>
+        <input class="text" v-model="search" placeholder="请输入商品关键字" ref="sea"/><!--这里通过ref=”sea”实现搜索框内容和本地文件的双向绑定-->
       </div>
     </nav-bread>
     <div class="accessory-result-page">
@@ -104,7 +104,7 @@
         pageSize: 8,
         /* busy:true,
          loading:false,*/
-        all: 5,
+        all: 7,
         priceFilter: [
           {
             startPrice: '0.00',
@@ -129,6 +129,14 @@
           {
             startPrice: '3000.00',
             endPrice: "6000.00"
+          },
+          {
+            startPrice: '6000.00',
+            endPrice: "10000.00"
+          },
+          {
+            startPrice: '10000.00',
+            endPrice: "15000.00"
           }
         ],
         filterBy: false, //当没有点击筛选时，移动端价格数据是不显示的
@@ -139,22 +147,25 @@
             type: "全部商品"
           },
           {
-            type: "小白鞋"
+            type: "家用电器"
           },
           {
-            type: "手机"
+            type: "钟表"
           },
           {
             type: "服装"
           },
           {
-            type: "背包"
+            type: "娱乐"
           },
           {
-            type:"手表"
+            type:"食品"
           },
           {
-            type: "耳机"
+            type: "家具"
+          },
+          {
+            type: "鞋"
           }
         ],
         /*search: '',

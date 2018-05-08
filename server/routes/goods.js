@@ -56,6 +56,14 @@ router.get("/",function(req,res,next) {      //二级路由，通过get拿到商
         priceGt = 3000;
         priceLte = 6000;
         break;
+      case '6':
+        priceGt = 6000;
+        priceLte = 10000;
+        break;
+      case '7':
+        priceGt = 10000;
+        priceLte = 15000;
+        break;
     }
     params = {
       salePrice: {
@@ -68,22 +76,25 @@ router.get("/",function(req,res,next) {      //二级路由，通过get拿到商
   if(proType != 0){
     switch (proType) {
       case '1':
-        proType = "小白鞋";
+        proType = "家用电器";
         break;
       case '2':
-        proType = "手机";
+        proType = "钟表";
         break;
       case '3':
         proType = "服装";
         break;
       case '4':
-        proType = "背包";
+        proType = "娱乐";
         break;
       case '5':
-        proType = "手表";
+        proType = "食品";
         break;
       case '6':
-        proType = "耳机";
+        proType = "家具";
+        break;
+      case '7':
+        proType = "鞋";
         break;
     }
   /*  params = {
