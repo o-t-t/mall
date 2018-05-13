@@ -93,7 +93,7 @@
 }
 
 .accessory-list .main .btn-area .btn {
-    width: 49%;
+    width: 47%;
 }
 
 @media only screen and (max-width: 991px) {
@@ -430,7 +430,7 @@
 }
 .nav-type{
   float:left;
-  margin-left:350px;
+  margin-left:300px;
   margin-top:0;
 }
 .type-click{

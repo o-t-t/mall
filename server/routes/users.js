@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var User = require('./../models/user');
-
+require('./../util/util');
 //登录接口
 router.post("/login",function(req,res,next){
   var param = {
@@ -55,5 +55,65 @@ router.post("/logout",function(req,res,next){
     msg: '',
     result: ''
   });
+});
+
+//注册接口
+router.post("/reg",function(req,res,next){
+  let userName = req.body.userRegName;
+  let userPwd = req.body.userRegPwd;
+  let userComPwd = req.body.userComPwd;
+  let phone = req.body.userPhone;
+  let email = req.body.userEmail;
+  let question = req.body.userQuestion;
+  let answer = req.body.userAnswer;
+  let sysDate = new Date().Format('yyyyMMddhhmmss');  //直接在util.js中的Date原型上扩展的Format方法，所以可以直接调用Format()方法生成一个系统的时间
+  let createDate = new Date().Format('yyyy-MM-dd hh:mm:ss');
+  let upDate = new Date().Format('yyyy-MM-dd hh:mm:ss');
+
+  User.findOne({userName:userName},function(err,userDoc){
+    if(userDoc){
+      res.json({
+        status: '1',
+        msg: '账号已存在！',
+        result: ''
+      });
+    }else{
+      let r1 = Math.floor(Math.random() * 10);
+      let r2 = Math.floor(Math.random() * 10);
+      let userId = `${r1}${(Date.parse(new Date())) / 1000}${r2}`;
+
+      User.insertMany({
+        addressList: [],
+        cartList: [],
+        orderList: [],
+        userId,
+        userName,
+        userPwd,
+        userComPwd,
+        phone,
+        email,
+        question,
+        answer,
+        createDate,
+        upDate
+      },function(err,result){
+        //console.log(result);
+        if(err){
+          res.json({
+            status: '0',
+            msg: err.message,
+            result: ''
+          });
+        }else{
+          res.json({
+            status: '0',
+            msg: '注册成功',
+            result: ''
+          });
+        }
+      });
+    }
+  });
+
 });
 module.exports = router;

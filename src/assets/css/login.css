@@ -23,6 +23,21 @@
 .regi_form_input .IconPwd {
   background-position: -198px 3px;
 }
+.regi_form_input .IconPhone {
+  background-position: -97px 3px;
+}
+.regi_form_input .IconEmail {
+  background-position: -499px 4px;
+}
+.regi_form_input .IconEmail {
+  background-position: -499px 7px;
+}
+.regi_form_input .IconQuestion {
+  background-position: -399px 7px;
+}
+.regi_form_input .IconAnswer {
+  background-position: -399px 7px;
+}
 .regi_form_input .regi_login_input{
   position: absolute;
   left:45px;
@@ -59,6 +74,13 @@
   color: #fff;
   font-size: 18px;
   text-align: center;
+}
+.reg{
+  display: block;
+  margin-top:10px;
+  float:right;
+  color:#009de6 !important;
+  padding-left:7px;
 }
 .btn-login:hover {
   background: #61b1ef;

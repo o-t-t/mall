@@ -1,3 +1,4 @@
+<script src="../../../../project/shop-lesson/server/routes/user.js"></script>
 <template>
     <div>
       <header class="header">
@@ -32,7 +33,7 @@
             <i class="navbar-link"></i><span class="navbar-link" v-if="nickName"><i>欢迎！</i>{{nickName}}</span>
             <a href="javascript:void(0)" class="navbar-link" @click="loginModalFlag=true" v-if="!nickName">你好，请登录</a>
             <a href="javascript:void(0)" class="navbar-link" @click="logOut" v-else>退出</a>
-            <a href="javascript:void(0)" class="navbar-link" @click="toReg()" v-show="nickName==''">免费注册</a>
+            <a href="javascript:void(0)" class="navbar-link" @click="regModalFlag=true" v-if="!nickName">免费注册</a>
 
             <!--<a href="javascript:void(0)" class="navbar-link">登出</a>-->
             <div class="navbar-cart-container">
@@ -57,11 +58,12 @@
             <div class="md-content">
               <div class="confirm-tips">
                 <div class="error-wrap">
-                  <span class="error error-show" v-show="errorTip">用户名或者密码错误</span>
+                  <span class="error error-show" v-show="errorTip">{{errorTip}}</span>
                 </div>
                 <ul>
                   <li class="regi_form_input">
                     <i class="icon IconPeople"></i>
+                    <!--tabindex当浏览者使用TAB键在网页控件中移动时，将首先移动到具有最小tabIndex属性值的控件上，最后在具有最大tabIndex属性值的控件上结束移动。-->
                     <input type="text" tabindex="1" name="loginname" v-model="userName" class="regi_login_input regi_login_input_left" placeholder="用户名" data-type="loginname">
                   </li>
                   <li class="regi_form_input noMargin">
@@ -72,26 +74,66 @@
               </div>
               <div class="login-wrap">
                 <a href="javascript:;" class="btn-login" @click="login">登  录</a>
-                <a href="javascript:;" class="reg">还没有账号？马上注册</a>
+                <a href="javascript:;" class="reg" @click="toReg">还没有账号？马上注册</a>
               </div>
             </div>
           </div>
         </div>
 
-      <!--  <div class="md-modal modal-msg md-modal-transition">
+        <div class="md-modal modal-msg md-modal-transition" v-bind:class="{'md-show':regModalFlag}">
           <div class="md-modal-inner">
             <div class="md-top">
               <div class="md-title">注册</div>
-              <button class="md-close">Close</button>
+              <button class="md-close" @click="regModalFlag=false">Close</button>
             </div>
 
             <div class="md-content">
-              <>
+              <div class="confirm-tips">
+                <div class="error-wrap">
+                  <span class="error error-show" v-show="regWrong">{{regWrong}}</span>
+                </div>
+
+                <ul>
+                  <li class="regi_form_input">
+                    <i class="icon IconPeople"></i>
+                    <input type="text" tabindex="1" name="loginname" v-model="userRegName" class="regi_login_input regi_login_input_left" placeholder="用户名">
+                  </li>
+                  <li class="regi_form_input">
+                    <i class="icon IconPwd"></i>
+                    <input type="password" tabindex="2"  name="password" v-model="userRegPwd" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="密码"><!--当点击回车键的时候能自动登录-->
+                  </li>
+                  <li class="regi_form_input">
+                    <i class="icon IconPwd"></i>
+                    <input type="password" tabindex="3" name="loginname" v-model="userComPwd" class="regi_login_input regi_login_input_left" placeholder="确认密码">
+                  </li>
+                  <li class="regi_form_input">
+                    <i class="icon IconPhone"></i>
+                    <input type="text" tabindex="4" name="loginname" v-model="userPhone" class="regi_login_input regi_login_input_left" placeholder="手机号">
+                  </li>
+                  <li class="regi_form_input">
+                    <i class="icon IconEmail"></i>
+                    <input type="text" tabindex="5" name="loginname" v-model="userEmail" class="regi_login_input regi_login_input_left" placeholder="邮箱">
+                  </li>
+                  <li class="regi_form_input">
+                    <i class="icon IconQuestion"></i>
+                    <input type="text" tabindex="6" name="loginname" v-model="userQuestion" class="regi_login_input regi_login_input_left" placeholder="提示问题">
+                  </li>
+                  <li class="regi_form_input">
+                    <i class="icon IconAnswer"></i>
+                    <input type="text" tabindex="7" name="loginname" v-model="userAnswer" class="regi_login_input regi_login_input_left" placeholder="提示答案" @keyup.enter="reg">
+                  </li>
+                </ul>
+              </div>
+              <div class="login-wrap">
+                <a href="javascript:;" class="btn-login" @click="reg">立即创建</a>
+                <a href="javascript:;" class="reg" @click="tologin">已有账号？马上登陆</a>
+              </div>
             </div>
           </div>
-        </div>-->
+        </div>
 
-      <div class="md-overlay" v-if="loginModalFlag" @click="loginModalFlag=false"></div>
+      <div class="md-overlay" v-if="loginModalFlag" @click="loginModalFlag=false" ></div>
+        <div class="md-overlay" v-if="regModalFlag" @click="regModalFlag=false" ></div>
     </header>
   </div>
 </template>
@@ -108,7 +150,16 @@
         userPwd: '123456',
         errorTip: false, //当用户名密码输入错误的时候显示，默认false不显示
         loginModalFlag: false, //当点击登录的时候遮罩层显示，未点击不显示
-        nickName: ''  //当登录的时候显示用户名
+        nickName: '',  //当登录的时候显示用户名
+        userRegName: '',
+        userRegPwd: '',
+        userComPwd: '',
+        userPhone: '',
+        userEmail: '',
+        userQuestion: '',
+        userAnswer: '',
+        regWrong: false,
+        regModalFlag: false
       }
     },
     methods: {
@@ -116,7 +167,7 @@
 
         if(!this.userName || !this.userPwd){
           //console.log("userName" + this.userName);
-          this.errorTip = true;
+          this.errorTip = "账号或者密码不能为空";
           return;
         }
         axios.post("/users/login",{
@@ -130,7 +181,7 @@
             this.loginModalFlag = false;
             this.nickName = res.result.userName;
           }else if(res.status == '2'){
-            this.errorTip = true;
+            this.errorTip = res.result;
           }
         });
       },
@@ -139,6 +190,72 @@
           let res = response.data;
           if(res.status == '0'){
             this.nickName = '';
+          }
+        });
+      },
+      tologin(){
+        this.loginModalFlag = true;
+        this.regModalFlag = false;
+        this.userName = '';
+        this.userPwd = '';
+        this.errorTip = false;
+        this.regWrong = false;
+      },
+      toReg(){
+        this.loginModalFlag = false;
+        this.regModalFlag = true;
+        this.userRegName = '';
+        this.userRegPwd = '';
+        this.userComPwd = '';
+        this.userPhone = '';
+        this.userEmail = '';
+        this.userQuestion = '';
+        this.userAnswer = '';
+        this.errorTip = false;
+        this.regWrong = false;
+      },
+      reg(){
+        if(!this.userRegName || !this.userRegPwd || !this.userComPwd){
+          this.regWrong = "账号或者密码不能为空";
+          return;
+        }
+        if(this.userRegPwd != this.userComPwd){
+          this.regWrong = "两次输入的密码不相同";
+          return;
+        }
+
+        if(this.userRegPwd.length <6){
+          this.regWrong = '密码的长度必须大于等于6位';
+          return;
+        }
+        var phone = this.userPhone;
+        if(!(/^1\d{10}$/.test(phone))){
+          this.regWrong = '手机号码格式错误';
+          return;
+        }
+        var email = this.userEmail;
+        if(!(/^[a-zA-Z0-9][\w.-]*@[a-zA-Z0-9][\w-]*\.(?:com|cn)$/.test(email))){
+          this.regWrong = '邮箱格式不正确';
+          return;
+        }
+        axios.post('/users/reg',{
+          userRegName: this.userRegName,
+          userRegPwd: this.userRegPwd,
+          userComPwd: this.userComPwd,
+          userPhone: this.userPhone,
+          userEmail: this.userEmail,
+          userQuestion: this.userQuestion,
+          userAnswer: this.userAnswer
+        }).then((response) => {
+          let res= response.data;
+          if(res.status == '0'){
+            console.log("注册成功");
+            this.userName = this.userRegName;
+            this.userPwd = this.userRegPwd;
+            this.regModalFlag = false;
+
+          }else if(res.status == '1'){
+            this.regWrong = res.msg;
           }
         });
       }
