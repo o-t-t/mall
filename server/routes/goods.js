@@ -19,7 +19,7 @@ mongoose.connection.on("disconnected",function(){
 });
 
 //查询商品列表数据 （get去拿数据）
-router.get("/",function(req,res,next) {      //二级路由，通过get拿到商品列表信息，接受一个回调
+router.get("/list",function(req,res,next) {      //二级路由，通过get拿到商品列表信息，接受一个回调
   var search = req.param("searchValue");
   let page = parseInt(req.param('page'));
   let pageSize = parseInt(req.param('pageSize'));  //get请求拿到的param都是字符串，所以需要转数据

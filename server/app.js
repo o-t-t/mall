@@ -33,8 +33,25 @@ app.all('*', function(req, res, next) {
   next();
 });
 
+//登录拦截（如果不登录，商品的其他操作，比如加入购物车就不能进行操作）
+app.use(function(req,res,next){
+  if(req.cookies.userId){
+    next();
+  }else{
+    if(req.originalUrl == '/users/login' || req.originalUrl == '/users/logout' || req.originalUrl == '/users/reg' || req.path == '/goods/list'){
+      next();
+    }else{
+      res.json({
+        status: '1001',
+        msg: '当前未登录',
+        result: ''
+      });
+    }
+  }
+});
+
 app.use('/', index);
-//app.use('/users', users);
+app.use('/users', users);
 app.use('/goods',goods);
 
 // catch 404 and forward to error handler

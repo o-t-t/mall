@@ -319,7 +319,7 @@
         //this.loading = true;
 
 
-        axios.get("/goods",{
+        axios.get("/goods/list",{
           params:param
         }).then((result) => {
           console.log(result.data.result);
