@@ -162,9 +162,23 @@
         regModalFlag: false
       }
     },
+    mounted(){
+      this.checkLogin();
+    },
     methods: {
-      login(){
+      checkLogin(){
+        axios.get('/users/checkLogin').then((response) => {
+          console.log('=--------')
+          let res = response.data;
+          if(res.status == '0'){
+            this.nickName = res.result;
+            this.loginModalFlag = false;
+          }else{
 
+          }
+        });
+      },
+      login(){
         if(!this.userName || !this.userPwd){
           //console.log("userName" + this.userName);
           this.errorTip = "账号或者密码不能为空";
