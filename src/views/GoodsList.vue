@@ -21,7 +21,10 @@
         <div class="filter-nav">
           <span class="sortby">排序:</span>
           <a href="javascript:void(0)" class="default cur" v-bind:class="{'sort-up': sortFlag}" @click="defaultSort">默认</a>
-          <a href="javascript:void(0)" class="price" v-bind:class="{'sort-up': sortFlag}" @click="sortGoods">价格 <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
+          <a href="javascript:void(0)" class="price" v-bind:class="{'sort-up': sortFlag}" @click="sortGoods">
+            价格
+            <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg>
+          </a>
           <a href="javascript:void(0)" class="filterby" @click.stop="showFilterPop">筛选</a>
         </div>
         <div class="accessory-result">
@@ -77,7 +80,27 @@
         </div>
       </div>
     </div>
-    <!--<page></page>-->
+
+    <modal v-bind:mdShow="mdShow" v-on:close="closeModal">
+      <p slot="message">
+        请先登录，否则无法加入购物车中！
+      </p>
+      <div slot="btnGroup">
+        <a class="btn btn--m" href="javascript:void(0);" @click="mdShow = false">关闭</a>
+      </div>
+    </modal>
+    <modal v-bind:mdShow="mdShowCart" v-on:close="closeModal">
+      <p slot="message">
+        <svg class="icon-status-ok">
+          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-status-ok"></use>
+        </svg>
+        <span>加入购物车成功！</span>
+      </p>
+      <div slot="btnGroup">
+        <a class="btn btn--m" href="javascript:void(0);" @click="mdShowCart = false">继续购物</a>
+        <router-link class="btn btn--m btn--red" href="javascript:;" to="/cart">查看购物车</router-link>
+      </div>
+    </modal>
     <!--遮罩层;点击遮罩层就关闭移动端的价格数据-->
     <div class="md-overlay" v-show="overLayFlag" @click.stop="closePop"></div>
     <nav-footer></nav-footer>
@@ -91,7 +114,7 @@
   import NavHeader from './../components/NavHeader.vue'
   import NavBread from './../components/NavBread.vue'
   import NavFooter from './../components/NavFooter.vue'
-  //import Page from './../components/Page.vue'
+  import Modal from './../components/Modal.vue'
   import axios from 'axios'
   export default {
     data() {
@@ -105,6 +128,8 @@
         /* busy:true,
          loading:false,*/
         all: 7,
+        mdShow: false,
+        mdShowCart: false,
         priceFilter: [
           {
             startPrice: '0.00',
@@ -303,7 +328,8 @@
     components: {
       NavHeader,
       NavBread,
-      NavFooter
+      NavFooter,
+      Modal
       // Page
     },
     methods: {
@@ -388,11 +414,16 @@
            var res = res.data;
            //console.log(productId);
            if(res.status == 0){
-             alert("加入成功");
+             //alert("加入成功");
+             this.mdShowCart = true;
            }else{
-             alert("Error msg" + res.msg );
+             //alert("Error msg" + res.msg );
+             this.mdShow = true;
            }
          });
+      },
+      closeModal(){
+        this.mdShow = false;
       },
       showFilterPop(){
         this.filterBy = true;
