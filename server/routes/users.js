@@ -155,4 +155,33 @@ router.get('/cartList',function(req,res,next){
     }
   });
 });
+
+//删除购物车中的商品
+router.post('/cartDel',function(req,res,next){
+  let userId = req.cookies.userId;
+  let productId = req.body.productId;
+  User.update({
+    userId: userId
+  },{  //不是把整个文档进行删除，所以只需要通过$pull来抽出要删除的数据并进行更新（这样就实现了要删除的数据）
+    $pull: {  //相当于一个抽屉（抽出需要删除的商品数据）---mongodb的原子操作符---{$pull修饰符会删除掉数组中符合条件的元素}
+      'cartList':{  //从cartList数组中删除符合productId的商品（即从cartList数组的productId中删除（抽出）productId的值）
+        'productId': productId
+      }
+    }
+  },function(err,doc){
+    if(err){
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      });
+    }else{
+      res.json({
+        status: '0',
+        msg: '',
+        result: 'suc'
+      });
+    }
+  });
+});
 module.exports = router;

@@ -191,7 +191,16 @@
         this.modalConfirm = true;
       },
       delCart(){
-
+        axios.post('/users/cartDel',{
+          productId:this.delItem.productId
+        }).then((response) => {
+          let res = response.data;
+          if(res.status == '0'){
+            this.modalConfirm = false;
+            let delCount = this.delItem.productNum;
+            this.init();
+          }
+        });
       }
     }
   }
