@@ -216,4 +216,40 @@ router.post('/cartEdit',function(req,res,next){
     }
   });
 });
+
+//购物车商品的全选操作
+router.post('/editCheckAll',function(req,res,next){
+  let userId = req.cookies.userId;
+  let checkAll = req.body.checkAll?'1':'0'
+  User.findOne({userId:userId},function(err,user){   //批量更新子文档的checked属性（这里用的是User.findOne拿到当前的用户对象）
+    if(err){
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      });
+    }else{
+      if(user){
+        user.cartList.forEach((item) => {    //拿到当前的用户对象之后，通过遍历用户下面的子文档来批量保存
+          item.checked = checkAll;
+        });
+        user.save(function(err1,doc){
+          if(err1){
+            res.json({
+              status: '1',
+              msg: err1.message,
+              result: ''
+            });
+          }else{
+            res.json({
+              status: '0',
+              msg: '',
+              result: 'suc'
+            });
+          }
+        });
+      }
+    }
+  });
+});
 module.exports = router;

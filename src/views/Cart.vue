@@ -109,8 +109,8 @@
           <div class="cart-foot-inner">
             <div class="cart-foot-l">
               <div class="item-all-check">
-                <a href="javascipt:;">
-                                    <span class="checkbox-btn item-check-btn">
+                <a href="javascipt:;" @click="toggleCheckAll">
+                                    <span class="checkbox-btn item-check-btn" v-bind:class="{'check':checkAllFlag}">
                                         <svg class="icon icon-ok"><use xlink:href="#icon-ok"/></svg>
                                     </span>
                   <span>全选</span>
@@ -166,7 +166,7 @@
       Modal
     },
     computed: {
-      totalPrice(){
+      totalPrice(){   //实时计算属性[计算商品总价]（和在data中的属性是一个性质）；这里实时计算属性了就不用再在data中去定义属性
         var money = 0;
         this.cartList.forEach((item) => {
           if(item.checked == '1'){
@@ -174,6 +174,16 @@
           }
         });
         return money;
+      },
+      checkAllFlag(){
+        return this.checkedCount == this.cartList.length;
+      },
+      checkedCount(){
+        var i = 0;
+        this.cartList.forEach((item) => {
+          if(item.checked == '1')i++;
+        });
+        return i;
       }
     },
     methods: {
@@ -221,6 +231,21 @@
           let res = response.data;
           if(res.status = '0'){
             console.log("修改成功");
+          }
+        });
+      },
+      toggleCheckAll(){
+        //点击之前，是未全选状态的；通过点击全选按钮之后切换到全选的状态
+        var flag = !this.checkAllFlag;
+        this.cartList.forEach((item) => {
+          item.checked = flag?'1':'0';
+        });
+        axios.post('/users/editCheckAll',{
+          checkAll: flag
+        }).then((response) => {
+          let res = response.data;
+          if(res.status == '0'){
+            console.log('更新全选状态成功');
           }
         });
       }
