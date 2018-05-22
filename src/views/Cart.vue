@@ -122,7 +122,7 @@
                 总价: <span class="total-price">{{totalPrice | currency('￥')}}</span>
               </div>
               <div class="btn-wrap">
-                <a class="btn btn--red">去结算</a>
+                <a class="btn btn--red" v-bind:class="{'btn--dis':checkedCount=='0'}" @click="checkOut">去结算</a>
               </div>
             </div>
           </div>
@@ -248,6 +248,13 @@
             console.log('更新全选状态成功');
           }
         });
+      },
+      checkOut(){
+        if(this.checkedCount>0){
+          this.$router.push({   //想要导航到不同的 URL，通过编程式实现页面的跳转
+            path:'/address'
+          });
+        }
       }
     }
   }
