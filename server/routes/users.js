@@ -184,4 +184,36 @@ router.post('/cartDel',function(req,res,next){
     }
   });
 });
+
+//修改商品数量（加、减、选中操作）
+router.post('/cartEdit',function(req,res,next){
+  let userId = req.cookies.userId;
+  let productId = req.body.productId;
+  let productNum = req.body.productNum;
+  let checked = req.body.checked;
+
+  /*  update方法有两个参数：
+     一个是查询文档，用于过滤需要更新的目标文档；
+     一个是修改器，即文档中要修改的内容。$作为一个占位符来更新一次update操作中的第一个符合条件的元素
+      Users.update({"userId":userId,"cartList.productId":productId},{
+      "cartList.$.productNum":productNum}*/
+  User.update({"userId": userId,"cartList.productId": productId},{   //mongoose提供的update，能更快的去更新一个子文档
+    "cartList.$.productNum": productNum,
+    "cartList.$.checked": checked
+  },function(err,doc){
+    if(err){
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      });
+    }else{
+      res.json({
+        status: '0',
+        msg: '',
+        result: 'suc'
+      });
+    }
+  });
+});
 module.exports = router;

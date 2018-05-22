@@ -146,7 +146,7 @@ router.get("/list",function(req,res,next) {      //二级路由，通过get拿�
 
 //加入购物车（向服务器提交数据，一般用post）
 router.post("/addCart",function(req,res,next){
-  var userId = "100000077";
+  var userId = req.cookies.userId;
   var productId = req.body.productId;
   var User = require('../models/user');
 
