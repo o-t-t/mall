@@ -60,11 +60,13 @@
           <div class="addr-list-wrap">
             <div class="addr-list">
               <ul>
-                <li>
+                <li class="padd" v-for="item in addressList">
                   <dl>
-                    <dt>XXX（用户名）</dt>
-                    <dd class="address">湖南省长沙市麓谷企业广场</dd>
-                    <dd class="tel">1017735262@qq.com</dd>
+                    <dt>收件人：{{item.userName}}</dt>
+                    <dd class="address">省份：{{item.province.provName}}</dd>
+                    <dd class="address">城市：{{item.city.cityName}}</dd>
+                    <dd class="address">街道：{{item.city.streetName}}</dd>
+                    <dd class="tel">联系号码：{{item.tel}}</dd>
                   </dl>
                   <div class="addr-opration addr-del">
                     <a href="javascript:;" class="addr-del-btn">
@@ -136,14 +138,25 @@
   export default{
     data(){
       return{
-
+        addressList: []
       }
+    },
+    mounted(){
+      this.init();
     },
     components:{
       NavHeader,
       NavFooter,
       NavBread,
       Modal
+    },
+    methods: {
+      init(){
+        axios.get('/users/addressList').then((response) => {
+          let res = response.data;
+          this.addressList = res.result;
+        });
+      }
     }
   }
 </script>
