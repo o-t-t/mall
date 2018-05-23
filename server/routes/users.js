@@ -272,4 +272,94 @@ router.get('/addressList',function(req,res,next){
     }
   });
 });
+
+//更新地址
+router.post('/updateAddress',function(req,res,next){
+  let userId = req.cookies.userId;
+  let addressId = req.body.addressId;
+  let userName = req.body.userName;
+  let provName = req.body.provName;
+  let cityName = req.body.cityName;
+  let streetName = req.body.streetName;
+  let tel = req.body.tel;
+  let isDefault = req.body.isDefault || false;
+/*  console.log(userId);
+  console.log(addressId);
+  console.log(userName);
+  console.log(provName);
+  console.log(cityName);
+  console.log(streetName);
+  console.log(tel);
+  console.log(isDefault);*/
+  if(userId && addressId && userName && provName && cityName && streetName && tel){
+    User.findOne({userId:userId},function(err,userDoc){
+      //console.log(userDoc);
+      if(err){
+        res.json({
+          status: '1',
+          msg: err.message,
+          result: ''
+        });
+      }else{
+        let addressList = userDoc.addressList;
+        //console.log(addressList);
+        //console.log(isDefault);
+        if(isDefault){  //如果对地址进行修改，就把修改的地址设为默认地址
+          addressList.forEach((item) =>{
+            if(item.addressId === addressId){
+              item.isDefault = true;
+              item.userName = userName;
+              //console.log(item.userName);
+              item.provName = provName;
+              item.cityName = cityName;
+              item.streetName = streetName;
+              item.tel = tel;
+            }else{
+              item.isdefault = false;
+            }
+          });
+          userDoc.save(function(err1,doc1){
+            if(err1){
+              res.json({
+                status: '1',
+                msg: err1.message,
+                result: ''
+              });
+            }else{
+              res.json({
+                status: '0',
+                msg: '',
+                result: 'suc1'
+              });
+            }
+          });
+        }else{
+          User.update({
+            "addressList.addressId": addressId
+          },{
+            "addressList.$.userName": userName,
+            "addressList.$.province.provName": provName,
+            "addressList.$.city.cityName": cityName,
+            "addressList.$.city.streetName": streetName,
+            "addressList.$.tel": tel
+          },function(err2,doc2){
+            if(err2){
+              res.json({
+                status: '1',
+                msg: err2.message,
+                result: ''
+              });
+            }else{
+              res.json({
+                status: '0',
+                msg: '',
+                result: 'suc2'
+              });
+            }
+          });
+        }
+      }
+    });
+  }
+});
 module.exports = router;

@@ -68,13 +68,18 @@
                     <dd class="address">街道：{{item.city.streetName}}</dd>
                     <dd class="tel">联系号码：{{item.tel}}</dd>
                   </dl>
+                  <div class="addr-opration addr-upd">
+                    <a href="javascript:;" class="addr-upd-btn" @click="updateAddress(item)">
+                      编辑
+                    </a>
+                  </div>
                   <div class="addr-opration addr-del">
                     <a href="javascript:;" class="addr-del-btn">
                       <svg class="icon icon-del"><use xlink:href="#icon-del"></use></svg>
                     </a>
                   </div>
                   <div class="addr-opration addr-set-default">
-                    <a href="javascript:;" class="addr-set-default-btn"><i>Set default</i></a>
+                    <a href="javascript:;" class="addr-set-default-btn"><i>设为默认地址</i></a>
                   </div>
                   <div class="addr-opration addr-default">默认地址</div>
                 </li>
@@ -126,6 +131,32 @@
         </div>
       </div>
     </div>
+    <modal v-bind:mdShow="mdUpdate" @close="closeModal">
+      <p slot="title">管理收获地址</p>
+      <div slot="message">
+        <div>
+          <input class="input" type="text" tabindex="1" placeholder="收货人姓名" v-model="userName">
+        </div>
+        <div>
+          <input class="input" type="text" tabindex="2" placeholder="省份" v-model="provName">
+        </div>
+        <div>
+          <input class="input" type="text" tabindex="3" placeholder="城市" v-model="cityName">
+        </div>
+        <div>
+          <input class="input" type="text" tabindex="4" placeholder="具体街道" v-model="streetName">
+        </div>
+        <div>
+          <input class="input" type="text" tabindex="5" placeholder="联系方式" v-model="tel">
+        </div>
+        <div>
+          <span style="font-size:14px;font-weight:bold;"><input type="checkbox" v-model="isDefault" style="margin-right: 5px;">设为默认</span>
+        </div>
+      </div>
+      <div slot="btnGroup" class="save">
+        <a class="btn btn--m" href="javascript:;" @click="upDate(addressId)">保存</a>
+      </div>
+    </modal>
     <nav-footer></nav-footer>
   </div>
 </template>
@@ -138,7 +169,16 @@
   export default{
     data(){
       return{
-        addressList: []
+        addressList: [],
+        mdUpdate: false,
+        updItem: {},
+        addressId: '',
+        userName: '',
+        provName: '',
+        cityName: '',
+        streetName: '',
+        tel: '',
+        isDefault: false
       }
     },
     mounted(){
@@ -155,6 +195,42 @@
         axios.get('/users/addressList').then((response) => {
           let res = response.data;
           this.addressList = res.result;
+        });
+      },
+      updateAddress(item){
+        this.updItem = item;
+        if(this.updItem.addressId){
+          this.addressId = this.updItem.addressId;
+          this.userName = this.updItem.userName;
+          this.provName = this.updItem.province.provName;
+          this.cityName = this.updItem.city.cityName;
+          this.streetName = this.updItem.city.streetName;
+          this.tel = this.updItem.tel
+          this.isDefault = this.updItem.isDefault
+
+        }
+        this.mdUpdate = true;
+      },
+      closeModal(){
+        this.mdUpdate = false;
+      },
+      upDate(addressId){
+        axios.post('/users/updateAddress',{
+          addressId: this.addressId,
+          userName: this.userName,
+          provName: this.provName,
+          cityName: this.cityName,
+          streetName: this.streetName,
+          tel: this.tel,
+          isDefault: this.isDefault
+        }).then((response) => {
+          let res = response.data;
+          this.mdUpdate = false;
+          if(res.status == '0'){
+            console.log(res.result);
+            this.init();
+
+          }
         });
       }
     }
