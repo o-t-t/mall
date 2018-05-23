@@ -60,7 +60,7 @@
           <div class="addr-list-wrap">
             <div class="addr-list">
               <ul>
-                <li class="padd" v-for="item in addressList">
+                <li class="padd" v-for="(item,index) in addressListFilter" v-bind:class="{'check':checkIndex == index}" @click="checkIndex=index">
                   <dl>
                     <dt>收件人：{{item.userName}}</dt>
                     <dd class="address">省份：{{item.province.provName}}</dd>
@@ -95,7 +95,7 @@
             </div>
 
             <div class="shipping-addr-more">
-              <a class="addr-more-btn up-down-btn" href="javascript:;" >
+              <a class="addr-more-btn up-down-btn" href="javascript:;" @click="expand" v-bind:class="{'open':limit>3}">
                 更多地址
                 <i class="i-up-down">
                   <i class="i-up-down-l"></i>
@@ -207,11 +207,18 @@
         cityName: '',
         streetName: '',
         tel: '',
-        isDefault: false
+        isDefault: false,
+        limit: 3,
+        checkIndex: 0
       }
     },
     mounted(){
       this.init();
+    },
+    computed: {
+      addressListFilter(){
+        return this.addressList.slice(0,this.limit);
+      }
     },
     components:{
       NavHeader,
@@ -290,6 +297,13 @@
             this.init();
           }
         });
+      },
+      expand(){
+        if(this.limit == 3){
+          this.limit = this.addressList.length;
+        }else{
+          this.limit = 3;
+        }
       }
     }
   }
