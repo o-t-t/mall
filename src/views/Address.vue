@@ -74,7 +74,7 @@
                     </a>
                   </div>
                   <div class="addr-opration addr-del">
-                    <a href="javascript:;" class="addr-del-btn">
+                    <a href="javascript:;" class="addr-del-btn" @click="delAddressConfirm(item.addressId)">
                       <svg class="icon icon-del"><use xlink:href="#icon-del"></use></svg>
                     </a>
                   </div>
@@ -126,7 +126,7 @@
             </div>
           </div>
           <div class="next-btn-wrap">
-            <a class="btn btn--m btn--red">去结算</a>
+            <router-link class="btn btn--m btn--red" v-bind:to="{path:'OrderConfirm',query:{'addressId':selectedAddrId}}">去结算</router-link>
           </div>
         </div>
       </div>
@@ -184,6 +184,16 @@
         <a class="btn btn--m" href="javascript:;" @click="addPut">新增</a>
       </div>
     </modal>
+
+    <modal v-bind:mdShow="isMdShow" @close="closeModal">
+      <p slot="message">
+        您确认要删除此条地址？
+      </p>
+      <div slot="btnGroup">
+        <a class="btn btn--m" href="javascript:;" @click="delAddress">删除</a>
+        <a class="btn btn--m btn--red" href="javascript:;" @click="isMdShow=false">取消</a>
+      </div>
+    </modal>
     <nav-footer></nav-footer>
   </div>
 </template>
@@ -199,6 +209,7 @@
         addressList: [],
         mdUpdate: false,
         mdAdd: false,
+        isMdShow: false,
         pupTitle: '',
         updItem: {},
         addressId: '',
@@ -209,7 +220,9 @@
         tel: '',
         isDefault: false,
         limit: 3,
-        checkIndex: 0
+        checkIndex: 0,
+        addressId: '',
+        selectedAddrId: ''
       }
     },
     mounted(){
@@ -231,6 +244,7 @@
         axios.get('/users/addressList').then((response) => {
           let res = response.data;
           this.addressList = res.result;
+          this.selectedAddrId = this.addressList[0].addressId;
         });
       },
       updateAddress(item){
@@ -261,6 +275,7 @@
       closeModal(){
         this.mdUpdate = false;
         this.mdAdd = false;
+        this.isMdShow = false;
       },
       upDate(addressId){
         axios.post('/users/updateAddress',{
@@ -313,6 +328,25 @@
           if(res.status = '0'){
             console.log('set' + res.result);
             this.init();
+          }
+        });
+      },
+      delAddressConfirm(addressId){
+        this.isMdShow = true;
+        this.addressId = addressId;
+      },
+      delAddress(){
+        axios.post('/users/delAddress',{
+          addressId: this.addressId
+        }).then((response) => {
+          let res = response.data;
+          if(res.status == '0'){
+            console.log('del ' + res.result);
+            this.isMdShow = false;
+            this.init();
+          }else{
+            this.isMdShow = false;
+            console.log(res.msg);
           }
         });
       }
