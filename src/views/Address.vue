@@ -222,7 +222,7 @@
         limit: 3,
         checkIndex: 0,
         addressId: '',
-        selectedAddrId: ''
+        selectedAddrId: '',
       }
     },
     mounted(){
@@ -244,7 +244,12 @@
         axios.get('/users/addressList').then((response) => {
           let res = response.data;
           this.addressList = res.result;
-          this.selectedAddrId = this.addressList[0].addressId;
+          let addressList = this.addressList;
+          addressList.forEach((item,i) => {
+          if(item.isDefault == true){
+            this.selectedAddrId = addressList[i].addressId;
+          }
+          });
         });
       },
       updateAddress(item){
