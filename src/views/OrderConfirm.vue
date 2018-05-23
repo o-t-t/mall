@@ -55,31 +55,31 @@
               </ul>
             </div>
             <ul class="cart-item-list">
-              <li>
+              <li v-for="item in cartList" v-if="item.checked=='1'">
                 <div class="cart-tab-1">
                   <div class="cart-item-pic">
-                    <img src="" alt="">
+                    <img v-lazy="'/static/' + item.productImage" :alt="item.productName">
                   </div>
                   <div class="cart-item-title">
-                    <div class="item-name">小米电视4 55英寸</div>
+                    <div class="item-name">{{item.productName}}</div>
 
                   </div>
                 </div>
                 <div class="cart-tab-2">
-                  <div class="item-price">3999</div>
+                  <div class="item-price">{{item.salePrice | currency('￥')}}</div>
                 </div>
                 <div class="cart-tab-3">
                   <div class="item-quantity">
                     <div class="select-self">
                       <div class="select-self-area">
-                        <span class="select-ipt">×10</span>
+                        <span class="select-ipt">×{{item.productNum}}</span>
                       </div>
                     </div>
                     <div class="item-stock item-stock-no">有货</div>
                   </div>
                 </div>
                 <div class="cart-tab-4">
-                  <div class="item-price-total">￥39990</div>
+                  <div class="item-price-total">{{(item.salePrice * item.productNum) | currency('￥')}}</div>
                 </div>
               </li>
             </ul>
@@ -92,23 +92,19 @@
             <ul>
               <li>
                 <span>商品总额:</span>
-                <span>￥39990</span>
+                <span>{{subTotal | currency('￥')}}</span>
               </li>
               <li>
                 <span>运费:</span>
-                <span>￥100</span>
+                <span>+{{shipping | currency('￥')}}</span>
               </li>
               <li>
                 <span>优惠:</span>
-                <span>￥100</span>
-              </li>
-              <li>
-                <span>纳税:</span>
-                <span>￥400</span>
+                <span>-{{discount | currency('￥')}}</span>
               </li>
               <li class="order-total-price">
                 <span>应付总额:</span>
-                <span>￥40390</span>
+                <span>{{orderTotal | currency('￥')}}</span>
               </li>
             </ul>
           </div>
@@ -135,13 +131,34 @@
   export default{
     data(){
       return{
-
+        shipping: 10,
+        discount: 5,
+        subTotal: 0,
+        orderTotal: 0,
+        cartList: []
       }
+    },
+    mounted(){
+      this.init();
     },
     components: {
       NavHeader,
       NavFooter,
       NavBread
+    },
+    methods: {
+      init(){
+        axios.get('/users/cartList').then((response) => {
+          let res =response.data;
+          this.cartList = res.result;
+          this.cartList.forEach((item) => {
+            if(item.checked == '1'){
+              this.subTotal += item.salePrice * item.productNum;
+            }
+          });
+          this.orderTotal = this.subTotal + this.shipping - this.discount;
+        });
+      }
     }
   }
 </script>
