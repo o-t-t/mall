@@ -79,9 +79,9 @@
                     </a>
                   </div>
                   <div class="addr-opration addr-set-default">
-                    <a href="javascript:;" class="addr-set-default-btn"><i>设为默认地址</i></a>
+                    <a href="javascript:;" class="addr-set-default-btn" v-if="!item.isDefault" @click="setDefault(item.addressId)"><i>设为默认地址</i></a>
                   </div>
-                  <div class="addr-opration addr-default">默认地址</div>
+                  <div class="addr-opration addr-default" v-if="item.isDefault">默认地址</div>
                 </li>
                 <li class="addr-new">
                   <div class="add-new-inner" @click="addAddr">
@@ -260,7 +260,7 @@
       },
       closeModal(){
         this.mdUpdate = false;
-        this.mdAdd = fasle;
+        this.mdAdd = false;
       },
       upDate(addressId){
         axios.post('/users/updateAddress',{
@@ -304,6 +304,17 @@
         }else{
           this.limit = 3;
         }
+      },
+      setDefault(addressId){
+        axios.post('/users/setDefault',{
+          addressId: addressId
+        }).then((response) => {
+          let res = response.data;
+          if(res.status = '0'){
+            console.log('set' + res.result);
+            this.init();
+          }
+        });
       }
     }
   }

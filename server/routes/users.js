@@ -318,6 +318,13 @@ router.post('/updateAddress',function(req,res,next){
               item.isdefault = false;
             }
           });
+          addressList.forEach((item) => {
+            if(item.addressId == addressId){
+              item.isDefault = true;
+            }else{
+              item.isDefault = false;
+            }
+          });
           userDoc.save(function(err1,doc1){
             if(err1){
               res.json({
@@ -366,6 +373,7 @@ router.post('/updateAddress',function(req,res,next){
 //新增收获地址
 router.post('/addAddress',function(req,res,next){
   let userId = req.cookies.userId;
+  let addressId = req.body.addressId;
   let userName = req.body.userName;
   let provName = req.body.provName;
   let cityName = req.body.cityName;
@@ -373,7 +381,7 @@ router.post('/addAddress',function(req,res,next){
   let tel = parseInt(req.body.tel);
   let isDefault = req.body.isDefault;
 
-  console.log(provName);
+  //console.log(provName);
   if(userId && userName && provName && cityName && streetName && tel){
     User.findOne({userId:userId},function(err,doc){
       if(err){
@@ -385,9 +393,9 @@ router.post('/addAddress',function(req,res,next){
       }else{
         let addressList = doc.addressList;
         if(isDefault){
-          addressList.forEach((item) => {
-            item.isdefault = false;
-          });
+          addressList.forEach((item, i) => {
+            item.isDefault = false;
+          })
         }
         addressList.push({
           "addressId": parseInt(Date.parse(new Date())),
@@ -397,6 +405,55 @@ router.post('/addAddress',function(req,res,next){
           tel,
           isDefault: isDefault
         });
+
+        doc.save(function(err1,doc1){
+          if(err1){
+            res.json({
+              status: '1',
+              msg: err1.message,
+              result: ''
+            });
+          }else{
+            res.json({
+              status: '0',
+              msg: '',
+              result: 'suc'
+            });
+          }
+        });
+      }
+    });
+  }
+});
+
+//设置默认地址（默认地址只有一个）
+router.post('/setDefault',function(req,res,next){
+  let userId = req.cookies.userId;
+  let addressId = req.body.addressId;
+  if(!addressId){
+    res.json({
+      status: '1000',
+      msg: 'addressId is NULL',
+      result: ''
+    });
+  }else{
+    User.findOne({userId:userId},function(err,doc){
+      if(err){
+        res.json({
+          status: '1',
+          msg: err.message,
+          result: ''
+        });
+      }else{
+        let addressList = doc.addressList;
+        addressList.forEach((item) => {
+          if(item.addressId == addressId){
+            item.isDefault = true;
+          }else{
+            item.isDefault = false;
+          }
+        });
+
         doc.save(function(err1,doc1){
           if(err1){
             res.json({
