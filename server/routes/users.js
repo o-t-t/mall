@@ -362,4 +362,58 @@ router.post('/updateAddress',function(req,res,next){
     });
   }
 });
+
+//新增收获地址
+router.post('/addAddress',function(req,res,next){
+  let userId = req.cookies.userId;
+  let userName = req.body.userName;
+  let provName = req.body.provName;
+  let cityName = req.body.cityName;
+  let streetName = req.body.streetName;
+  let tel = parseInt(req.body.tel);
+  let isDefault = req.body.isDefault;
+
+  console.log(provName);
+  if(userId && userName && provName && cityName && streetName && tel){
+    User.findOne({userId:userId},function(err,doc){
+      if(err){
+        res.json({
+          status: '1',
+          msg: err.message,
+          result: ''
+        });
+      }else{
+        let addressList = doc.addressList;
+        if(isDefault){
+          addressList.forEach((item) => {
+            item.isdefault = false;
+          });
+        }
+        addressList.push({
+          "addressId": parseInt(Date.parse(new Date())),
+          userName,
+          "province":{provName},
+          "city":{cityName,streetName},
+          tel,
+          isDefault: isDefault
+        });
+        doc.save(function(err1,doc1){
+          if(err1){
+            res.json({
+              status: '1',
+              msg: err1.message,
+              result: ''
+            });
+          }else{
+            res.json({
+              status: '0',
+              msg: '',
+              result: 'suc'
+            });
+          }
+        });
+      }
+    });
+  }
+});
 module.exports = router;
