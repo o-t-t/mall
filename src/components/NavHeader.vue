@@ -37,8 +37,8 @@
 
             <!--<a href="javascript:void(0)" class="navbar-link">登出</a>-->
             <div class="navbar-cart-container">
-              <span class="navbar-cart-count"></span>
-              <a class="navbar-link" href="/#/cart">
+              <span class="navbar-cart-count" v-if="cartCount>0">{{cartCount}}</span>
+              <a class="navbar-link" href="/cart">
                 <svg class="navbar-cart-logo">
                   <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-cart"></use>
                 </svg>
@@ -146,8 +146,8 @@
   export default {
     data() {
       return {
-        userName: 'admin',
-        userPwd: '123456',
+        userName: '',
+        userPwd: '',
         errorTip: false, //当用户名密码输入错误的时候显示，默认false不显示
         loginModalFlag: false, //当点击登录的时候遮罩层显示，未点击不显示
         nickName: '',  //当登录的时候显示用户名
@@ -162,6 +162,11 @@
         regModalFlag: false
       }
     },
+    computed: {
+      cartCount(){
+        return this.$store.state.cartCount;
+      }
+    },
     mounted(){
       this.checkLogin();
     },
@@ -173,6 +178,7 @@
           if(res.status == '0'){
             this.nickName = res.result;
             this.loginModalFlag = false;
+            this.getCartCount();
           }else{
 
           }
@@ -194,6 +200,7 @@
             this.errorTip = false;
             this.loginModalFlag = false;
             this.nickName = res.result.userName;
+            this.getCartCount();
           }else if(res.status == '2'){
             this.errorTip = res.result;
           }
@@ -271,6 +278,13 @@
           }else if(res.status == '1'){
             this.regWrong = res.msg;
           }
+        });
+      },
+      getCartCount(){
+        axios.get('/users/getCartCount').then((response) => {
+          var res = response.data;
+          //console.log(res.result);
+          this.$store.commit("initCartCount",res.result);
         });
       }
     }

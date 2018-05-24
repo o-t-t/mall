@@ -53,7 +53,7 @@
                     <div class="price">{{item.salePrice | currency('￥')}}</div>
                     <div class="btn-area">
                       <a href="javascript:;" class="btn btn--m" @click="addCart(item.productId)">加入购物车</a>
-                      <a href="javascript:;" class="btn btn--m">购买</a>
+                      <a href="javascript:;" class="btn btn--m" @click="checkOut(item.productId)" item.checked = '1'>一键购买</a>
                     </div>
                   </div>
                 </li>
@@ -306,6 +306,7 @@
 
         ]*/
         search: '',
+        checked: 0
       }
     },
     mounted(){
@@ -340,7 +341,7 @@
           sort: this.sortFlag?1:-1,
           priceLevel: this.priceChecked,
           proType: this.typeChecked,
-          searchValue: this.search//搜索值
+          searchValue: this.search,//搜索值
         }
         //this.loading = true;
 
@@ -416,11 +417,15 @@
            if(res.status == 0){
              //alert("加入成功");
              this.mdShowCart = true;
+             this.$store.commit("updateCartCount",1);
            }else{
              //alert("Error msg" + res.msg );
              this.mdShow = true;
            }
          });
+      },
+      checkOut(productId) {
+        this.$router.push({path: '/address', query: {productId}})
       },
       closeModal(){
         this.mdShow = false;

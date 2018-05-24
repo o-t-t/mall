@@ -208,6 +208,7 @@
           if(res.status == '0'){
             this.modalConfirm = false;
             let delCount = this.delItem.productNum;
+            this.$store.commit("updateCartCount",-delCount);
             this.init();
           }
         });
@@ -230,7 +231,8 @@
         }).then((response) => {
           let res = response.data;
           if(res.status = '0'){
-            console.log("修改成功");
+            //console.log("修改成功");
+            this.$store.commit("updateCartCount",flag == 'add'? 1: -1);
           }
         });
       },
