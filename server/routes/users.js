@@ -378,7 +378,7 @@ router.post('/addAddress',function(req,res,next){
   let provName = req.body.provName;
   let cityName = req.body.cityName;
   let streetName = req.body.streetName;
-  let tel = parseInt(req.body.tel);
+  let tel = req.body.tel;
   let isDefault = req.body.isDefault;
 
   //console.log(provName);
@@ -472,5 +472,126 @@ router.post('/setDefault',function(req,res,next){
       }
     });
   }
+});
+
+//删除地址
+router.post('/delAddress',function(req,res,next){
+  let userId = req.cookies.userId;
+  let addressId = req.body.addressId;
+  User.findOne({
+    userId:userId
+  },function(err,doc){
+    if(err){
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      });
+    }else{
+      if(doc.addressList.length > 1){
+        User.update({
+          userId:userId
+        },{
+          $pull: {
+            'addressList': {
+              'addressId': addressId
+            }
+          }
+        },function(err1,doc1){
+          if(err1){
+            res.json({
+              status: '1',
+              msg: err1.message,
+              result: ''
+            });
+          }else{
+            res.json({
+              status: '0',
+              msg: '',
+              result: 'suc'
+            });
+          }
+        });
+      }else{
+        res.json({
+          status: '1',
+          msg: '至少保留一条地址',
+          result: ''
+        });
+      }
+    }
+  });
+});
+
+//创建订单
+router.post('/payMent',function(req,res,next){
+  let userId = req.cookies.userId;
+  let addressId = req.body.addressId;
+  let orderTotal = req.body.orderTotal;
+  User.findOne({userId: userId},function(err,doc){
+    if(err){
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      });
+    }else{
+      let address = '';
+      let goodsList = [];
+      //获取当前用户的地址信息
+      doc.addressList.forEach((item) => {
+        if(item.addressId == addressId){
+          address = item;
+        }
+      });
+
+      //获取用户购物车中需要购买的商品
+      doc.cartList.forEach((item) => {
+        if(item.checked == '1'){
+          goodsList.push(item);
+        }
+      });
+
+      //创建订单号
+      let platform = '688';
+      let r1 = Math.floor(Math.random()*10);
+      let r2 = Math.floor(Math.random()*10);
+      let sysDate = new Date().Format('yyyyMMddhhmmss');
+      let createDate = new Date().Format('yyyy-MM-dd hh:mm:ss');
+      var orderId = platform + r1 + sysDate + r2;
+
+      var order = {
+        orderId: orderId,
+        orderTotal: orderTotal,
+        addressInfo: address,
+        goodsList: goodsList,
+        orderStatus: '1',
+        createDate: createDate
+      }
+
+      doc.orderList.push(order);
+      doc.save(function(err1,doc1){
+        if(err1){
+          res.json({
+            status: '1',
+            msg: err1.message,
+            result: ''
+          });
+        }else{
+          res.json({
+            status: '0',
+            msg: '',
+            result: {
+              orderId: order.orderId,
+              orderTotal: order.orderTotal,
+              addressInfo: order.addressInfo,
+              goodsList: order.goodsList,
+              createDate: order.createDate
+            }
+          });
+        }
+      });
+    }
+  });
 });
 module.exports = router;

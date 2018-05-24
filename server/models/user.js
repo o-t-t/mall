@@ -40,7 +40,7 @@ var userSchema = new Schema({
           "postCode": String
         },
       "postCode": Number,
-      "tel": Number,
+      "tel": String,
       "isDefault": Boolean
     }
   ]
