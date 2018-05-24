@@ -594,4 +594,63 @@ router.post('/payMent',function(req,res,next){
     }
   });
 });
+
+//根据订单Id查询订单详细信息
+router.get('/orderDetail',function(req,res,next){
+  let userId = req.cookies.userId;
+  let orderId = req.param("orderId");
+  User.findOne({userId:userId},function(err,userInfo){
+    //console.log(userInfo);
+    if(err){
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      });
+    }else{
+      var orderList = userInfo.orderList;
+      //console.log(orderList);
+      if(orderList.length>0){
+        var orderTotal = 0;
+        var addressInfo = {};
+        var goodsList = [];
+        var createDate = '';
+        orderList.forEach((item) => {
+          if(item.orderId == orderId){
+            orderTotal = item.orderTotal;
+            addressInfo = item.addressInfo;
+            //console.log(addressInfo);
+            goodsList = item.goodsList;
+            createDate = item.createDate;
+          }
+        });
+        if(orderTotal>0){
+          res.json({
+            status: '0',
+            msg: '',
+            result: {
+              orderId : orderId,
+              orderTotal: orderTotal,
+              addressInfo: addressInfo,
+              goodsList: goodsList,
+              createDate: createDate
+            }
+          });
+        }else{
+          res.json({
+            status: '12000',
+            msg: '订单不生效',
+            result: ''
+          });
+        }
+      }else{
+        res.json({
+          status: '12001',
+          msg: '当前用户未创建订单',
+          result: ''
+        });
+      }
+    }
+  });
+});
 module.exports = router;
