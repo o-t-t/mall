@@ -41,7 +41,7 @@ app.use(function(req,res,next){
   }else{
     //req.originalUrl 当前接口地址(包括参数的地址)；获取不带参数的 url 地址 req.path
     //console.log(`path:${req.path}`,`originalUrl:${req.originalUrl}`)
-    if(req.originalUrl == '/users/login' || req.originalUrl == '/users/logout' || req.originalUrl == '/users/reg' || req.originalUrl == '/admins/reg' || req.originalUrl.indexOf('/goods/list') > -1 ){
+    if(req.originalUrl == '/users/login' || req.originalUrl == '/users/logout' || req.originalUrl == '/users/reg' || req.originalUrl == '/admins/reg' || req.originalUrl == '/admins/login' || req.originalUrl.indexOf('/goods/list') > -1 ){
       next();
     }else{
       res.json({

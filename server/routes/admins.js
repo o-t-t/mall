@@ -3,7 +3,7 @@ var router = express.Router();
 var Admin = require('./../models/admin');
 require('./../util/util');
 
-//注册接口
+//商家接口
 router.post("/reg",function(req,res,next){
   let adminName = req.body.adminRegName;
   let adminPwd = req.body.adminRegPwd;
@@ -55,4 +55,45 @@ router.post("/reg",function(req,res,next){
   });
 });
 
+//商家登录
+router.post("/login",function(req,res,next){
+  var param = {
+    adminName : req.body.adminName,
+    adminPwd: req.body.adminPwd
+  }
+
+  Admin.findOne(param,function(err,doc){
+    //console.log(doc);
+    if(err){
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      });
+    }else{
+      if(doc){
+        res.cookie("adminId",doc.adminId,{  //1、cookie名称;2、cookie的值；3、设定cookie的一些参数
+          path: '/',   //把cookie放在服务器根目录
+          maxAge: 1000*60*60  //cookie 的周期为1小时
+        });
+        res.cookie("adminName",doc.adminName,{
+          path: '/',
+          maxAge: 1000*60*60
+        });
+        res.json({
+          status: '0',
+          msg: '',
+          result: {
+            adminName: doc.adminName
+          }
+        });
+      }else{
+        res.json({
+          status: '2',
+          result: '账号或密码错误'
+        });
+      }
+    }
+  });
+});
 module.exports = router;

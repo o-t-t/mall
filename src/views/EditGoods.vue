@@ -292,7 +292,25 @@
     },
     methods: {
       login(){
-
+        if(!this.adminName || !this.adminPwd){
+          //console.log("userName" + this.userName);
+          this.errorTip = "账号或者密码不能为空";
+          return;
+        }
+        axios.post("/admins/login",{
+          adminName:this.adminName,
+          adminPwd:this.adminPwd
+        }).then((response) => {
+          let res = response.data
+          //console.log(res.result);
+          if(res.status == '0'){
+            this.errorTip = false;
+            this.loginModalFlag = false;
+            this.nickName = res.result.adminName;
+          }else if(res.status == '2'){
+            this.errorTip = res.result;
+          }
+        });
       },
       logOut(){
 
