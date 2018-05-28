@@ -313,7 +313,12 @@
         });
       },
       logOut(){
-
+        axios.post("/admins/logout").then((response) => {
+          let res = response.data;
+          if(res.status == '0'){
+            this.nickName = '';
+          }
+        });
       },
       reg(){
         if(!this.adminRegName || !this.adminRegPwd || !this.adminComPwd){

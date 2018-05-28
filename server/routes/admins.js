@@ -96,4 +96,17 @@ router.post("/login",function(req,res,next){
     }
   });
 });
+
+//商家登出接口(清除cookie)
+router.post("/logout",function(req,res,next){
+  res.cookie("adminId",'',{
+    path: '/',
+    maxAge: -1
+  });
+  res.json({
+    status: '0',
+    msg: '',
+    result: ''
+  });
+});
 module.exports = router;
