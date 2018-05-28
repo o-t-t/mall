@@ -8,6 +8,7 @@ var logger = require('morgan');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var goods = require('./routes/goods');
+var admins = require('./routes/admins');
 
 var app = express();
 
@@ -38,7 +39,9 @@ app.use(function(req,res,next){
   if(req.cookies.userId){
     next();
   }else{
-    if(req.originalUrl == '/users/login' || req.originalUrl == '/users/logout' || req.originalUrl == '/users/reg' || req.path == '/goods/list'){
+    //req.originalUrl 当前接口地址(包括参数的地址)；获取不带参数的 url 地址 req.path
+    //console.log(`path:${req.path}`,`originalUrl:${req.originalUrl}`)
+    if(req.originalUrl == '/users/login' || req.originalUrl == '/users/logout' || req.originalUrl == '/users/reg' || req.originalUrl == '/admins/reg' || req.originalUrl.indexOf('/goods/list') > -1 ){
       next();
     }else{
       res.json({
@@ -53,6 +56,7 @@ app.use(function(req,res,next){
 app.use('/', index);
 app.use('/users', users);
 app.use('/goods',goods);
+app.use('/admins',admins);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

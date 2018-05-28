@@ -13,6 +13,12 @@ module.exports = {
     proxyTable: {
       '/goods':{
         target:'http://localhost:3000'
+      },
+      '/users':{
+        target:'http://localhost:3000'
+      },
+      '/admins':{
+        target:'http://localhost:3000'
       }
     },
 
