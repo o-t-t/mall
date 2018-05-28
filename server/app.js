@@ -36,7 +36,7 @@ app.all('*', function(req, res, next) {
 
 //登录拦截（如果不登录，商品的其他操作，比如加入购物车就不能进行操作）
 app.use(function(req,res,next){
-  if(req.cookies.userId){
+  if(req.cookies.userId || req.cookies.adminId){
     next();
   }else{
     //req.originalUrl 当前接口地址(包括参数的地址)；获取不带参数的 url 地址 req.path

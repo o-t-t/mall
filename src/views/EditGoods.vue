@@ -122,11 +122,11 @@
     <div class="container">
       <div class="filter-nav">
         <div class="edit-btn">
-          <a href="javascript:;" class="add">
-            添加商品
-          </a>
           <a href="javascript:;" class="del">
             批量删除
+          </a>
+          <a href="javascript:;" class="add" @click="addProduct">
+            添加商品
           </a>
         </div>
       </div>
@@ -215,6 +215,42 @@
         </div>
       </div>
     </div>
+
+    <modal v-bind:mdShow="mdShow" v-on:close="closeModal">
+      <p slot="message">
+        请先登录，否则无法新增商品！
+      </p>
+      <div slot="btnGroup">
+        <a class="btn btn--m" href="javascript:void(0);" @click="mdShow = false">关闭</a>
+      </div>
+    </modal>
+    <modal v-bind:mdShow="mdProduct" @close="closeModal">
+      <p slot="title">{{pupTitle}}</p>
+      <div slot="message">
+        <div>
+          <input class="input" type="text" tabindex="1" placeholder="商品名称" v-model="productName">
+        </div>
+        <div>
+          <input class="input" type="text" tabindex="2" placeholder="商品ID" v-model="productId">
+        </div>
+        <div>
+          <input class="input" type="text" tabindex="3" placeholder="商品价格" v-model="salePrice">
+        </div>
+        <div>
+          <input class="input" type="text" tabindex="4" placeholder="商品类别" v-model="productType">
+        </div>
+        <div>
+          <input class="input" type="text" tabindex="5" placeholder="商品图片" v-model="productImage">
+        </div>
+        <div>
+          <input class="input" type="text" tabindex="5" placeholder="添加入库量" v-model="productNum">
+        </div>
+      </div>
+      <div slot="btnGroup" class="save">
+        <a class="btn btn--m" href="javascript:;">添加商品</a>
+      </div>
+    </modal>
+
     <nav-footer></nav-footer>
   </div>
 </template>
@@ -250,12 +286,21 @@
         priceChecked: 'all',
         typeChecked: '',
         sortFlag: true,
-        search: ''
-
+        search: '',
+        productName: '',
+        productId: '',
+        productImage: '',
+        salePrice: '',
+        productType: '',
+        productNum: '',
+        mdProduct: false,
+        mdShow: false,
+        pupTitle: ''
       }
     },
     mounted(){
       this.getGoodsList();
+      this.checkLogin();
     },
     computed: {
       indexs: function(){
@@ -291,6 +336,18 @@
       Modal
     },
     methods: {
+        checkLogin(){
+          axios.get('/admins/checkLogin').then((response) => {
+            let res = response.data;
+            console.log(res);
+            if(res.status == '0'){
+              this.nickName = res.result;
+              this.loginModalFlag = false;
+            }else{
+
+            }
+          });
+        },
       login(){
         if(!this.adminName || !this.adminPwd){
           //console.log("userName" + this.userName);
@@ -302,7 +359,7 @@
           adminPwd:this.adminPwd
         }).then((response) => {
           let res = response.data
-          //console.log(res.result);
+          //console.log(res);
           if(res.status == '0'){
             this.errorTip = false;
             this.loginModalFlag = false;
@@ -313,8 +370,9 @@
         });
       },
       logOut(){
-        axios.post("/admins/logout").then((response) => {
+        axios.post("/admins/logOut").then((response) => {
           let res = response.data;
+          console.log(res);
           if(res.status == '0'){
             this.nickName = '';
           }
@@ -409,6 +467,24 @@
       pageClick(){
         this.getGoodsList();
         //console.log('现在在第'+this.page+'页');
+      },
+      addProduct(){
+        if(!this.nickName){
+          this.mdShow = true;
+        }else{
+          this.pupTitle = '新增商品';
+          this.productId = '';
+          this.productName = '';
+          this.productImage = '';
+          this.productNum = '';
+          this.productType = '';
+          this.salePrice = '';
+          this.mdProduct = true;
+        }
+      },
+      closeModal(){
+        this.mdProduct = false;
+        this.mdShow = false;
       }
     }
   }

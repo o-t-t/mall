@@ -3,7 +3,7 @@ var router = express.Router();
 var Admin = require('./../models/admin');
 require('./../util/util');
 
-//商家接口
+//商家注册接口
 router.post("/reg",function(req,res,next){
   let adminName = req.body.adminRegName;
   let adminPwd = req.body.adminRegPwd;
@@ -97,8 +97,26 @@ router.post("/login",function(req,res,next){
   });
 });
 
+//登录保持状态cookies
+router.get('/checkLogin',function(req,res,next){
+  console.log(req.cookies.adminId);
+  if(req.cookies.adminId){
+    res.json({
+      status: '0',
+      msg: '',
+      result: req.cookies.adminName || ''
+    });
+  }else{
+    res.json({
+      status: '1',
+      msg: '未登录',
+      result: ''
+    });
+  }
+});
+
 //商家登出接口(清除cookie)
-router.post("/logout",function(req,res,next){
+router.post("/logOut",function(req,res,next){
   res.cookie("adminId",'',{
     path: '/',
     maxAge: -1
