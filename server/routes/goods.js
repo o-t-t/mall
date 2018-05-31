@@ -2,7 +2,7 @@ var express = require('express'); //通过NodeJS原生的封装
 var router = express.Router();  //拿到express框架的路由
 var mongoose = require('mongoose');  //要操作我们的数据库，就需要获取mongoose对象
 var Goods = require('../models/goods');  //加载模型表，加载私有文件
-
+var User = require('../models/user');
 //连接MongoDB数据库
 mongoose.connect('mongodb://127.0.0.1:27017/mall');
 
@@ -116,6 +116,7 @@ router.get("/list",function(req,res,next) {      //二级路由，通过get拿�
       }
     }
   }
+
     //利用Goods模板调用mongooseAPI进行数据库查询、调到指定页
     let goodsModel = Goods.find(params).skip(skip).limit(pageSize);
     //console.log(Goods.find(params));
@@ -137,7 +138,6 @@ router.get("/list",function(req,res,next) {      //二级路由，通过get拿�
           result: {
             count: doc.length,
             list: doc,
-
           }
         });
       }
@@ -148,7 +148,6 @@ router.get("/list",function(req,res,next) {      //二级路由，通过get拿�
 router.post("/addCart",function(req,res,next){
   var userId = req.cookies.userId;
   var productId = req.body.productId;
-  var User = require('../models/user');
 
   User.findOne({userId:userId},function(err,userDoc){
     //console.log(userDoc);
@@ -223,4 +222,4 @@ router.post("/addCart",function(req,res,next){
   });
 });
 
-  module.exports = router; //正确输出路由后，在app.js中的（app.use("/goods",goods)）才能读取到goods.js的路由
+module.exports = router; //正确输出路由后，在app.js中的（app.use("/goods",goods)）才能读取到goods.js的路由

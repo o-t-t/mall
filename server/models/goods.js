@@ -8,8 +8,10 @@ var productSchema = new Schema({
   "checked":String,
   "productNum":Number,
   "productImage": String,
+  "createDate": Date,
   "productType":[
     {
+      "typeId": String,
       "typeName":String
     }
   ]

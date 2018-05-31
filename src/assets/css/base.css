@@ -589,7 +589,30 @@ a:hover {
   line-height: 46px;
   margin-bottom:10px;
 }
+.choose{
+  display: inline-block;
+  width: 113px;
+  height: 50px;
+  margin-left: -38px;
+  line-height: 40px;
+  font-size: 14px;
+  color: #757575;
+  font-weight: bold;
+}
+.select-type{
+  display: inline-block;
+  width: 100px;
+  height: 40px;
+  line-height:40px;
+  border: 1px solid #ccc;
+  background: #fff;
+  box-shadow: inset 0 3px 5px -4px rgba(0,0,0,.4), inset -1px 0 3px -2px rgba(0,0,0,.1);
+  border-radius: 6px;
+  color:#757575;
+}
+.select-type option{
 
+}
 .btn:hover, .btn[href]:hover {
   background-color: #ffe5e6;
   -webkit-transition: all .3s ease-out;
