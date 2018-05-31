@@ -13,9 +13,7 @@ router.post('/', upload.single('goodsPic'), function(req, res, next){  //upload.
   res.json({
     status: '0',
     msg: '',
-    result: {
-      path: file.path,
-    }
+    result: file.path
   });
 })
 

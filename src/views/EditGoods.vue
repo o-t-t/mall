@@ -562,7 +562,9 @@
         }
         axios.post('/admins/upload',formData,config).then((response) => {
           let res = response.data;
+          console.log(res);
           let path = res.result.split('\\')[2];
+          console.log(path);
           var img = document.getElementById("previewPic");
           img.src = `/static/${path}`
         });
