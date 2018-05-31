@@ -155,10 +155,10 @@
       <div class="filter-nav">
         <div class="edit-btn">
           <a href="javascript:;" class="del">
-            批量删除
+            批量下架
           </a>
           <a href="javascript:;" class="add" @click="addProduct">
-            添加商品
+            上新商品
           </a>
         </div>
       </div>
@@ -212,7 +212,7 @@
                 <div class="cart-tab-5">
                   <div class="pror-item-opration">
                     <a href="javascript:;" class="btn-handle">修改</a>
-                    <a href="javascript:;" class="btn-handle">删除</a>
+                    <a href="javascript:;" class="btn-handle" @click="delProdConfirm(item)">下架</a>
                   </div>
                 </div>
               </li>
@@ -240,7 +240,6 @@
                 </li>
                 <li v-if="page!=all"><a v-on:click="page++,pageClick()" href="#">下一页</a></li>
                 <li v-if="page == all"><a class="banclick">下一页</a></li>
-                <li><a>共<i>{{all}}</i>页</a></li>
               </ul>
             </div>
           </div>
@@ -299,6 +298,13 @@
       </div>
     </modal>
 
+    <modal v-bind:mdShow="delProduct" @close="closeModal">
+      <p slot="message">您确认要下架此商品么？</p>
+      <div slot="btnGroup">
+        <a class="btn btn--m" href="javascript:;" @click="delProd">下架</a>
+        <a class="btn btn--m btn--red" href="javascript:;" @click="delProduct = false">取消</a>
+      </div>
+    </modal>
     <nav-footer></nav-footer>
   </div>
 </template>
@@ -343,7 +349,9 @@
         productNum: '',
         mdProduct: false,
         mdShow: false,
-        pupTitle: ''
+        delProduct: false,
+        pupTitle: '',
+        delItem: {},
       }
     },
     mounted(){
@@ -518,6 +526,7 @@
       closeModal(){
         this.mdProduct = false;
         this.mdShow = false;
+        this.delProduct = false;
       },
       addProduct(){
         if(!this.nickName){
@@ -571,6 +580,25 @@
           let path = res.result.split('\\')[2];
           var img = document.getElementById("previewPic");
           img.src = `/static/${path}`
+        });
+      },
+      delProdConfirm(item){
+        this.delItem = item;
+        this.delProduct = true;
+      },
+      delProd(){
+        axios.post('/admins/productDel',{
+          productId:this.delItem.productId
+        }).then((response) => {
+          let res = response.data;
+          console.log(res);
+          if(res.status == '0'){
+            this.delProduct = false;
+            let delCount = this.delItem.productNum;
+            this.getGoodsList()
+          }else{
+            this.delProduct = false;
+          }
         });
       }
     }

@@ -136,7 +136,6 @@ router.post("/addProd",function(req,res,next){
   let createDate = new Date().Format('yyyy-MM-dd hh:mm:ss');
   goods.createDate = createDate;
   if(req.cookies.adminId){
-
     Goods.findOne({productId:goods.productId},function(err,Doc){
       if(Doc){
         res.json({
@@ -160,6 +159,31 @@ router.post("/addProd",function(req,res,next){
               data: doc1
             });
           }
+        });
+      }
+    });
+  }
+});
+
+//下架商品
+router.post('/productDel',function(req,res,next){
+  let adminId = req.cookies.adminId;
+  let productId = req.body.productId;
+  if(adminId){
+    Goods.remove({productId:productId},function(err,doc){
+      console.log(doc);
+      console.log(adminId);
+      if(err){
+        res.json({
+          status: '1',
+          msg: err.message,
+          result: ''
+        });
+      }else{
+        res.json({
+          status: '0',
+          msg: '',
+          result: 'suc'
         });
       }
     });
