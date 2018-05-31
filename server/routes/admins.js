@@ -171,8 +171,6 @@ router.post('/productDel',function(req,res,next){
   let productId = req.body.productId;
   if(adminId){
     Goods.remove({productId:productId},function(err,doc){
-      console.log(doc);
-      console.log(adminId);
       if(err){
         res.json({
           status: '1',
@@ -187,6 +185,34 @@ router.post('/productDel',function(req,res,next){
         });
       }
     });
+  }
+});
+
+//批量下架
+router.post('/productsDel',function(req,res,next){
+  let adminId = req.cookies.adminId;
+  let checked = req.body.checked;
+  let productId = req.body.productId;
+  console.log(checked);
+  console.log(productId);
+  if(adminId) {
+    if(checked == '1'){
+        Goods.remove({productId:productId},function(err,doc){
+        if(err){
+          res.json({
+            status: '1',
+            msg: err.message,
+            result: ''
+          });
+        }else{
+          res.json({
+            status: '0',
+            msg: '',
+            result: 'suc'
+          });
+        }
+      });
+    }
   }
 });
 module.exports = router;
