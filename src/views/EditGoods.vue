@@ -392,7 +392,6 @@
             this.nickName = res.result;
             this.loginModalFlag = false;
           }else{
-
           }
         });
       },
@@ -535,19 +534,26 @@
         }
       },
       addProducts(){
-        axios.post('/admins/addProd',{
+        let obj = {
           productId: this.productId,
           productName: this.productName,
-          productImage: this.productImage,
-          /*productNum: this.productNum,
-          productType: this.productType,*/
+          productImage: document.getElementById("previewPic").src.split('/')[4],
+          productNum: this.productNum,
+          productType: [{
+            typeId: '',
+            typeName: this.productType
+          }],
           salePrice: this.salePrice
+        }
+        //console.log(document.getElementById("previewPic").src);
+        axios.post('/admins/addProd',{
+          goods: obj
         }).then((response) => {
-          let res= response.data;
-          console.log(res.result);
-          console.log(res.status);
+          let res = response.data;
           if(res.status == '0'){
             this.mdProduct = false;
+            let img = document.getElementById('previewPic');
+            img.src = 'http://placehold.it/200x113/E0E0E0/ccc.png'
           }
         });
       },
@@ -562,9 +568,7 @@
         }
         axios.post('/admins/upload',formData,config).then((response) => {
           let res = response.data;
-          console.log(res);
           let path = res.result.split('\\')[2];
-          console.log(path);
           var img = document.getElementById("previewPic");
           img.src = `/static/${path}`
         });

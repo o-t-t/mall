@@ -10,7 +10,7 @@ var users = require('./routes/users');
 var goods = require('./routes/goods');
 var admins = require('./routes/admins');
 var uploadRouter = require('./routes/upload');
-//var readRouter = require('./routes/readPic');
+var readRouter = require('./routes/readPic');
 
 var app = express();
 
@@ -61,7 +61,7 @@ app.use('/users', users);
 app.use('/goods',goods);
 app.use('/admins',admins);
 app.use('/admins/upload', uploadRouter);
-//app.use('/public/images/*',readRouter);
+app.use('/public/images/*',readRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

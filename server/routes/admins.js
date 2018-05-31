@@ -131,18 +131,13 @@ router.post("/logOut",function(req,res,next){
 
 //往商品列表中添加新的商品
 router.post("/addProd",function(req,res,next){
-  let productId = req.body.productId;
-  let productName = req.body.productName;
-  let productNum = parseInt(req.body.productNum);
-  let salePrice = req.body.salePrice;
-  let productType = '';
-  let productImage = '';
+  let goods = req.body.goods;
   let sysDate = new Date().Format('yyyyMMddhhmmss');  //直接在util.js中的Date原型上扩展的Format方法，所以可以直接调用Format()方法生成一个系统的时间
   let createDate = new Date().Format('yyyy-MM-dd hh:mm:ss');
-//console.log(productName);
+  goods.createDate = createDate;
   if(req.cookies.adminId){
 
-    Goods.findOne({productId:productId},function(err,Doc){
+    Goods.findOne({productId:goods.productId},function(err,Doc){
       if(Doc){
         res.json({
           status: '1',
@@ -150,23 +145,22 @@ router.post("/addProd",function(req,res,next){
           result: ''
         });
       }else{
-      var query = {
-        productId,
-        productName,
-        productNum,
-        salePrice,
-        "productType":[],
-        productImage,
-        createDate
-      }
-
-      pushGoods(query,function(data) {
-          res.json({
-            status : 0,
-            message : 'push success'
-          });
-
-        })
+        var good = new Goods(goods);
+        good.save(function(err1,doc1){
+          if(err1){
+            res.json({
+              status: '1',
+              msg: err.message,
+              result: ''
+            });
+          }else{
+            res.json({
+              status: '0',
+              msg: '',
+              data: doc1
+            });
+          }
+        });
       }
     });
   }
