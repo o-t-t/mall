@@ -249,7 +249,7 @@
                 </div>
                 <div class="cart-tab-5">
                   <div class="pror-item-opration">
-                    <a href="javascript:;" class="btn-handle">修改</a>
+                    <a href="javascript:;" class="btn-handle" @click="updateProduct(item)">修改</a>
                     <a href="javascript:;" class="btn-handle" @click="delProdConfirm(item)">下架</a>
                   </div>
                 </div>
@@ -313,7 +313,7 @@
             <svg class="icon icon-add"><use xlink:href="#icon-add"></use></svg>
           </i>
           <!--type='file'实现文件上传；accept表示上传文件类型，image表示图片，*表示所有支持的格式-->
-          <input type="file"  accept="image/*" id="goodsPic"  name="goodsPic" class="uploadInput" @change="uploadFunc"/>
+          <input type="file"  accept="image/*" id="goodsPic"  name="goodsPic" class="uploadInput" @change="uploadFunc('goodsPic','previewPic')"/>
           <p>商品图片</p>
         </div>
         <img id="previewPic"  class="pic" src="http://placehold.it/220x220/E0E0E0/ccc.png"  alt="图片" />
@@ -333,6 +333,49 @@
       </div>
       <div slot="btnGroup" class="save">
         <a class="btn btn--m" href="javascript:;" @click="addProducts">添加商品</a>
+      </div>
+    </modal>
+
+    <modal v-bind:mdShow="mdUpdate" @close="closeModal">
+      <p slot="title">{{pupTitle}}</p>
+      <div slot="message">
+        <div>
+          <input class="input" type="text" tabindex="1" placeholder="商品名称" v-model="productName">
+        </div>
+        <div>
+          <input class="input" type="text" tabindex="2" placeholder="商品ID" v-model="productId">
+        </div>
+        <div>
+          <input class="input" type="text" tabindex="3" placeholder="商品价格" v-model="salePrice">
+        </div>
+        <div>
+          <input class="input" type="text" tabindex="5" placeholder="添加入库量" v-model="productNum">
+        </div>
+        <div class="add-new-prod">
+          <i>
+            <svg class="icon icon-add"><use xlink:href="#icon-add"></use></svg>
+          </i>
+          <!--type='file'实现文件上传；accept表示上传文件类型，image表示图片，*表示所有支持的格式-->
+          <input type="file"  accept="image/*" id="goodsPics"  name="goodsPic" class="uploadInput" @change="uploadFunc('goodsPics','previewPics')"/>
+          <p>商品图片</p>
+        </div>
+        <img id="previewPics"  class="pic" src="http://placehold.it/220x220/E0E0E0/ccc.png"  alt="图片" />
+        <div class="distance">
+          <span  class="choose">选择商品类别：</span>
+          <select class="select-type" v-model="productType">
+            <option value ="全部商品">全部商品</option>
+            <option value ="家用电器">家用电器</option>
+            <option value="钟表">钟表</option>
+            <option value="服装">服装</option>
+            <option value="娱乐">娱乐</option>
+            <option value="食品">食品</option>
+            <option value="家具">家具</option>
+            <option value="鞋">鞋</option>
+          </select>
+        </div>
+      </div>
+      <div slot="btnGroup" class="save">
+        <a class="btn btn--m" href="javascript:;" @click="upDateProd(productId)">修改商品</a>
       </div>
     </modal>
 
@@ -397,9 +440,11 @@
         mdShow: false,
         delProduct: false,
         delProducts: false,
+        mdUpdate: false,
         pupTitle: '',
         delItem: {},
-        delItems: {}
+        delItems: {},
+        oldProductId: ''
       }
     },
     mounted(){
@@ -577,6 +622,8 @@
         this.mdShow = false;
         this.delProduct = false;
         this.delProducts = false;
+        this.mdProduct = false;
+        this.mdUpdate = false;
       },
       addProduct(){
         if(!this.nickName){
@@ -618,8 +665,8 @@
           }
         });
       },
-      uploadFunc(){
-        var file = document.getElementById("goodsPic").files[0];//获取File对象；这里是单张上传照片，[0]代表第一章图片。如果多张，就是一个var file = e.target.files;
+      uploadFunc(elId,imgId){
+        var file = document.getElementById(elId).files[0];//获取File对象；这里是单张上传照片，[0]代表第一章图片。如果多张，就是一个var file = e.target.files;
         //console.dir(document.getElementById('goodsPic'));//console.dir()可以显示一个对象所有的属性和方法。
         //console.log(document.getElementById('goodsPic').files);
         var formData = new FormData();
@@ -630,7 +677,8 @@
         axios.post('/admins/upload',formData,config).then((response) => {
           let res = response.data;
           let path = res.result.split('\\')[2];
-          var img = document.getElementById("previewPic");
+          var img = document.getElementById(imgId);
+          this.productImage = path;
           img.src = `/static/${path}`
         });
       },
@@ -662,9 +710,15 @@
         this.delProducts = true;
       },
       delProds(){
+        let delList = this.goodsList.filter((item) => {
+          return item.checked === '1';
+        });
+        delList = delList.map((item) => (
+          item.productId
+        ));
+        //console.log(delList);
         axios.post('/admins/productsDel',{
-          checked: this.delItems,
-          productId: this.productId
+          delProductId: delList
         }).then((response) => {
           let res = response.data;
           //console.log(res);
@@ -672,6 +726,47 @@
             console.log('批量删除成功');
             this.getGoodsList();
             this.delProducts = false;
+          }
+        });
+      },
+      updateProduct(item){
+        this.updItem = item;
+        //console.log(this.updItem);
+        if(this.updItem.productId){
+          this.pupTitle = '修改商品信息';
+          this.productId = this.updItem.productId;
+          this.productName = this.updItem.productName;
+          this.productImage = this.updItem.productImage;
+          this.productNum = this.updItem.productNum;
+          this.productType = this.updItem.productType[0].typeName;
+          this.salePrice = this.updItem.salePrice;
+          this.oldProductId = this.updItem.productId
+          this.mdUpdate = true;
+        }
+      },
+      upDateProd(productId){
+        let obj = {
+          productId: this.productId,
+          productName: this.productName,
+          productImage: this.productImage,
+          productNum: this.productNum,
+          productType: [{
+            typeId: '',
+            typeName: this.productType
+          }],
+          salePrice: this.salePrice,
+          checked: this.checked,
+          oldProductId: this.oldProductId
+        }
+        axios.post('/admins/updateProduct',{
+          goods: obj
+        }).then((response) => {
+          let res = response.data;
+          if(res.status == '0'){
+            console.log('修改成功');
+            console.log(res.result);
+            this.mdUpdate = false;
+            this.getGoodsList();
           }
         });
       }

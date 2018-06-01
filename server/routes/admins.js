@@ -191,28 +191,101 @@ router.post('/productDel',function(req,res,next){
 //批量下架
 router.post('/productsDel',function(req,res,next){
   let adminId = req.cookies.adminId;
-  let checked = req.body.checked;
-  let productId = req.body.productId;
-  console.log(checked);
+  let productId = req.body.delProductId;
   console.log(productId);
   if(adminId) {
-    if(checked == '1'){
-        Goods.remove({productId:productId},function(err,doc){
+    let status = '1'
+    productId.forEach((item) => {
+      Goods.remove({productId:item},function(err,doc){
         if(err){
-          res.json({
-            status: '1',
-            msg: err.message,
-            result: ''
-          });
+          status = '1';
         }else{
-          res.json({
-            status: '0',
-            msg: '',
-            result: 'suc'
-          });
+         status = '0';
         }
       });
+    });
+    if(status === '1'){
+      res.json({
+        status: '1',
+        msg: 'err'
+      });
+    }else{
+      res.json({
+        status: '0',
+        msg: 'suc'
+      });
     }
-  }
+    }
 });
+
+//修改商品信息
+router.post('/updateProduct',function(req,res,next){
+ let goods = req.body.goods;
+ let sysDate = new Date().Format('yyyyMMddhhmmss');
+ let createDate = new Date().Format('yyyy-MM-dd hh:mm:ss');
+   if(req.cookies.adminId){
+     //console.log(goods);
+       Goods.findOne({productId:goods.oldProductId},function(err,Doc){
+         //console.log(userDoc);
+         if(err){
+           res.json({
+             status: '1',
+             msg: err.message,
+             result: ''
+           });
+         }else{
+          /* var good = new Goods(goods);*/
+           let good = Doc;
+           good.update({$set: {  //$set设置的要改的一些字段值
+             productName: goods.productName,
+             productId: goods.productId,
+             productNum: goods.productNum,
+             productType: goods.productType,
+             salePrice: goods.salePrice,
+             productImage: goods.productImage,
+             createDate: createDate
+           }}).update(function (err, result) {
+             if (err) {
+               res.json({
+                 status: '1',
+                 msg: err.msg
+               })
+             } else {
+               res.json({
+                 status: '0',
+                 msg: 'suc'
+               })
+             }
+           })
+           // Goods.update({
+           //   productId: goods.productId
+           // },{
+           //   "good.$.productName": goods.productName,
+           //   "good.$.productId": goods.productId,
+           //   "good.$.productNum": goods.productNum,
+           //   "good.$.productType": goods.productType,
+           //   "good.$.salePrice": goods.salePrice,
+           //   "good.$.productImage": goods.productImage,
+           //   "good.$.createDate": createDate
+           // },function(err1,doc1){
+           //   //console.log(good);
+           //   if(err1){
+           //     res.json({
+           //       status: '1',
+           //       msg: err1.message,
+           //       result: ''
+           //     });
+           //   }else{
+           //     res.json({
+           //       status: '0',
+           //       msg: '',
+           //       result: good
+           //     });
+           //   }
+           // });
+         }
+       });
+   }
+});
+
 module.exports = router;
