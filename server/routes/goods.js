@@ -222,4 +222,24 @@ router.post("/addCart",function(req,res,next){
   });
 });
 
+//根据产品Id
+router.get('/findProductById',function(req,res,next){
+  let productId = req.param('productId');
+  console.log(productId);
+  Goods.findOne({productId: productId},function(err,Doc){
+    if(err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      });
+    } else {
+      res.json({
+        status: '0',
+        msg: '',
+        result: Doc
+      });
+    }
+  });
+});
 module.exports = router; //正确输出路由后，在app.js中的（app.use("/goods",goods)）才能读取到goods.js的路由

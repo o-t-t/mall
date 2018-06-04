@@ -407,11 +407,40 @@
 .filter-nav {
     height: 55px;
     line-height: 55px;
-    margin: 0 0 30px 0;
+    margin: 0;
     padding: 0 20px;
     background: #fff;
     text-align: right;
     overflow: hidden;
+}
+.edit-btn{
+  margin:0 auto;
+  width:20%;
+}
+.edit-btn a{
+  width:90px;
+  height:33px;
+  line-height:33px;
+  display:inline-block;
+  text-align:center;
+  margin-left:50px;
+  border-radius:5px;
+  background:red;
+  color:#ffffff;
+}
+.edit-btn .add{
+  background:#5a98de;
+}
+.edit-btn .del{
+  background:#dd514c;
+}
+.edit-btn .add:hover{
+  background: #0a6999;
+  color: #fff;
+}
+.edit-btn .del:hover{
+  background: #c52b26;
+  color: #fff;
 }
 .nav-category{
     height: 55px;

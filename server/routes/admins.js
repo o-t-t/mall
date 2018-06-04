@@ -144,7 +144,7 @@ router.post("/addProd",function(req,res,next){
           result: ''
         });
       }else{
-        var good = new Goods(goods);
+        var good = new Goods(goods);  //创建一个实例，调用一个函数必要要有一个实例调用，所以就需要创建出一个实例再去调用save方法，然后把数据保存到数据库中
         good.save(function(err1,doc1){
           if(err1){
             res.json({
@@ -192,15 +192,16 @@ router.post('/productDel',function(req,res,next){
 router.post('/productsDel',function(req,res,next){
   let adminId = req.cookies.adminId;
   let productId = req.body.delProductId;
-  console.log(productId);
+  //console.log(productId);
   if(adminId) {
-    let status = '1'
+    let status = '1';
     productId.forEach((item) => {
       Goods.remove({productId:item},function(err,doc){
+        //console.log(status);
         if(err){
           status = '1';
         }else{
-         status = '0';
+          status = '0';
         }
       });
     });

@@ -261,12 +261,12 @@
           <div class="cart-foot-inner">
             <div class="cart-foot-l">
               <div class="item-all-check">
-                <a href="javascipt:;">
+               <!-- <a href="javascipt:;">
                            <span class="checkbox-btn item-check-btn">
                               <svg class="icon icon-ok"><use xlink:href="#icon-ok"/></svg>
                            </span>
                   <span>全选</span>
-                </a>
+                </a>-->
               </div>
             </div>
             <div class="page-bar">
@@ -652,7 +652,7 @@
           salePrice: this.salePrice,
           checked: this.checked
         }
-        //console.log(document.getElementById("previewPic").src);
+        console.log(document.getElementById("previewPic").src);
         axios.post('/admins/addProd',{
           goods: obj
         }).then((response) => {

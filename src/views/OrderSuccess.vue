@@ -21,7 +21,7 @@
           <h3>恭喜! <br>订单提交成功，请尽快付款！</h3>
           <p>
             <span>订单号：{{orderId}}</span>
-            <span>应付金额：{{orderTotal | currency('￥')}}</span>
+            <span>总付金额：{{orderTotal | currency('￥')}}</span>
             <span>创建时间：{{createDate}}</span>
           </p>
           <div class="p-msg w">
@@ -39,9 +39,9 @@
               <span class="price">单价</span>
             </div>
           </div>
-          <!--商品-->
+          <!--从购物车中购买商品-->
           <div class="confirm-goods-table">
-            <div class="cart-items" v-for="(item,i) in cartList" :key="i" v-if="item.checked === '1'">
+            <div class="cart-items" v-for="(item,i) in cartList" :key="i">
               <div class="name">
                 <div class="name-cell ellipsis">
                   <a href="javascript:;" title=""
@@ -56,12 +56,13 @@
               </div>
             </div>
           </div>
+
           <div class="order-create-btn-wrap">
             <div class="btn-l-wrap">
-              <a href="javascript:;" class="btn btn--m">购物车列表</a>
+              <router-link href="javascript:;" class="btn btn--m" to="/cart">购物车列表</router-link>
             </div>
             <div class="btn-r-wrap">
-              <a href="javascript:;" class="btn btn--m">商品列表</a>
+              <router-link href="javascript:;" class="btn btn--m" to="/">商品列表</router-link>
             </div>
           </div>
         </div>
@@ -93,6 +94,7 @@
     },
     mounted(){
       var orderId = this.$route.query.orderId;
+      //console.log(orderId);
       if(!orderId){
         return
       }

@@ -53,7 +53,7 @@
                     <div class="price">{{item.salePrice | currency('￥')}}</div>
                     <div class="btn-area">
                       <a href="javascript:;" class="btn btn--m" @click="addCart(item.productId)">加入购物车</a>
-                      <a href="javascript:;" class="btn btn--m" @click="checkOut(item.productId)" item.checked = '1'>一键购买</a>
+                      <a href="javascript:;" class="btn btn--m" @click="checkOut(item.productId)">一键购买</a>
                     </div>
                   </div>
                 </li>
@@ -72,7 +72,6 @@
                 </li>
                 <li v-if="page!=all"><a v-on:click="page++,pageClick()" href="#">下一页</a></li>
                 <li v-if="page == all"><a class="banclick">下一页</a></li>
-                <li><a>共<i>{{all}}</i>页</a></li>
               </ul>
             </div>
             <!--</div>-->
@@ -317,6 +316,20 @@
         var left = 1;
         var right = this.all;
         var ar = [];
+        if(this.all>= 5){
+          if(this.page > 3 && this.page < this.all-2){
+            left = this.page - 2
+            right = this.page + 2
+          }else{
+            if(this.page<=3){
+              left = 1
+              right = 5
+            }else{
+              right = this.all
+              left = this.all -4
+            }
+          }
+        }
         while (left <= right){
           ar.push(left)
           left ++
@@ -344,14 +357,15 @@
           searchValue: this.search,//搜索值
         }
         //this.loading = true;
-
-
         axios.get("/goods/list",{
           params:param
         }).then((result) => {
           console.log(result.data.result);
           var res = result.data;
           this.goodsList = res.result.list;
+          /*var arr = res.result.count;
+          console.log(arr);*/
+
           /*this.loading = false;
           if(res.status == '0'){
             if(flag){

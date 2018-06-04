@@ -1,4 +1,4 @@
-<script src="../../../../project/shop-lesson/server/routes/user.js"></script>
+
 <template>
     <div>
       <header class="header">
@@ -211,6 +211,7 @@
           let res = response.data;
           if(res.status == '0'){
             this.nickName = '';
+            this.getCartCount();
           }
         });
       },

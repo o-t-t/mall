@@ -2,7 +2,7 @@
   <div>
     <nav-header></nav-header>
     <nav-bread>
-      <span>收获地址</span>
+      <span>收货地址</span>
     </nav-bread>
     <div class="checkout-page">
       <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -126,7 +126,7 @@
             </div>
           </div>
           <div class="next-btn-wrap">
-            <router-link class="btn btn--m btn--red" v-bind:to="{path:'OrderConfirm',query:{'addressId':selectedAddrId}}">去结算</router-link>
+            <a class="btn btn--m btn--red" @click="payment">去结算</a>
           </div>
         </div>
       </div>
@@ -251,6 +251,18 @@
           }
           });
         });
+      },
+      // 付款
+      payment () {
+        // 需要拿到地址id
+        var productId = this.$route.query.productId;
+        this.$router.push({
+          path: '/orderConfirm',
+          query: {
+            'addressId': this.selectedAddrId,
+            'productId': productId,
+          }
+        })
       },
       updateAddress(item){
         this.updItem = item;

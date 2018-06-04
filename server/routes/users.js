@@ -621,6 +621,7 @@ router.get('/orderDetail',function(req,res,next){
             addressInfo = item.addressInfo;
             //console.log(addressInfo);
             goodsList = item.goodsList;
+            console.log(goodsList);
             createDate = item.createDate;
           }
         });

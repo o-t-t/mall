@@ -54,32 +54,62 @@
                 <li>小计</li>
               </ul>
             </div>
-            <ul class="cart-item-list">
-              <li v-for="item in cartList" v-if="item.checked=='1'">
+            <ul class="cart-item-list" v-if = '!this.$route.query.productId'>
+            <li v-for="item in cartList" v-if="item.checked=='1'">
+              <div class="cart-tab-1">
+                <div class="cart-item-pic">
+                  <img v-lazy="'/static/' + item.productImage" :alt="item.productName">
+                </div>
+                <div class="cart-item-title">
+                  <div class="item-name">{{item.productName}}</div>
+
+                </div>
+              </div>
+              <div class="cart-tab-2">
+                <div class="item-price">{{item.salePrice | currency('￥')}}</div>
+              </div>
+              <div class="cart-tab-3">
+                <div class="item-quantity">
+                  <div class="select-self">
+                    <div class="select-self-area">
+                      <span class="select-ipt">×{{item.productNum}}</span>
+                    </div>
+                  </div>
+                  <div class="item-stock item-stock-no">有货</div>
+                </div>
+              </div>
+              <div class="cart-tab-4">
+                <div class="item-price-total">{{(item.salePrice * item.productNum) | currency('￥')}}</div>
+              </div>
+            </li>
+          </ul>
+
+            <ul class="cart-item-list" v-if = 'this.$route.query.productId'>
+              <li>
                 <div class="cart-tab-1">
                   <div class="cart-item-pic">
-                    <img v-lazy="'/static/' + item.productImage" :alt="item.productName">
+                    <img v-lazy="'/static/' + product.productImage" :alt="product.productName">
                   </div>
                   <div class="cart-item-title">
-                    <div class="item-name">{{item.productName}}</div>
+                    <div class="item-name">{{product.productName}}</div>
 
                   </div>
                 </div>
                 <div class="cart-tab-2">
-                  <div class="item-price">{{item.salePrice | currency('￥')}}</div>
+                  <div class="item-price">{{product.salePrice | currency('￥')}}</div>
                 </div>
                 <div class="cart-tab-3">
                   <div class="item-quantity">
                     <div class="select-self">
                       <div class="select-self-area">
-                        <span class="select-ipt">×{{item.productNum}}</span>
+                        <span class="select-ipt">×1</span>
                       </div>
                     </div>
                     <div class="item-stock item-stock-no">有货</div>
                   </div>
                 </div>
                 <div class="cart-tab-4">
-                  <div class="item-price-total">{{(item.salePrice * item.productNum) | currency('￥')}}</div>
+                  <div class="item-price-total">{{(product.salePrice) | currency('￥')}}</div>
                 </div>
               </li>
             </ul>
@@ -135,7 +165,9 @@
         discount: 5,
         subTotal: 0,
         orderTotal: 0,
-        cartList: []
+        cartList: [],
+        goodsList: [],
+        product: ''
       }
     },
     mounted(){
@@ -148,20 +180,39 @@
     },
     methods: {
       init(){
-        axios.get('/users/cartList').then((response) => {
-          let res =response.data;
-          this.cartList = res.result;
-          this.cartList.forEach((item) => {
-            if(item.checked == '1'){
-              this.subTotal += item.salePrice * item.productNum;
+        if(this.$route.query.productId){
+          axios.get('/goods/findProductById',{
+            params: {
+              productId: this.$route.query.productId
+            }
+          }).then((response) => {
+            let res= response.data;
+            console.log(res);
+            if(res.status == '0'){
+              this.product = res.result;
+              this.subTotal = res.result.salePrice;
+              this.orderTotal = this.subTotal + this.shipping - this.discount;
+            }else{
+              console.log(res.msg);
             }
           });
-          this.orderTotal = this.subTotal + this.shipping - this.discount;
-        });
+        }else{
+          axios.get('/users/cartList').then((response) => {
+            let res =response.data;
+            this.cartList = res.result;
+            this.cartList.forEach((item) => {
+              if(item.checked == '1'){
+                this.subTotal += item.salePrice * item.productNum;
+              }
+            });
+            this.orderTotal = this.subTotal + this.shipping - this.discount;
+          });
+        }
+        //console.log(typeof this.$route.query.productId)
       },
+
       payMent(){
         var addressId = this.$route.query.addressId;
-
         axios.post('/users/payMent',{
           addressId: addressId,
           orderTotal: this.orderTotal
